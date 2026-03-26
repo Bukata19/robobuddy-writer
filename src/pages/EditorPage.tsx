@@ -293,7 +293,7 @@ const EditorPage: React.FC = () => {
           children.push(new Paragraph({ heading: HeadingLevel.HEADING_3, children: [new TextRun({ text, bold: true, size: 24, font: 'Arial' })] }));
         } else if (tag === 'ul' || tag === 'ol') {
           el.querySelectorAll(':scope > li').forEach((li) => {
-            const liRuns = processNode(li);
+            const liRuns = toTextRuns(li);
             children.push(new Paragraph({
               children: liRuns.length > 0 ? liRuns : [new TextRun(li.textContent || '')],
               bullet: tag === 'ul' ? { level: 0 } : undefined,
@@ -301,7 +301,7 @@ const EditorPage: React.FC = () => {
             }));
           });
         } else if (tag === 'p' || tag === 'div') {
-          const runs = processNode(el);
+          const runs = toTextRuns(el);
           if (runs.length > 0) {
             children.push(new Paragraph({ children: runs, spacing: { after: 200 } }));
           } else if (text) {
