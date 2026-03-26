@@ -27,6 +27,9 @@ import {
   Send,
   Loader2,
   Check,
+  AlertTriangle,
+  Eye,
+  EyeOff,
   XCircle,
 } from 'lucide-react';
 import type { Json } from '@/integrations/supabase/types';
@@ -108,6 +111,20 @@ const EditorPage: React.FC = () => {
   const [humanizerIntensity, setHumanizerIntensity] = useState<'subtle' | 'moderate' | 'full'>('moderate');
   const [humanizing, setHumanizing] = useState(false);
   const [humanizerResult, setHumanizerResult] = useState<{ original: string; humanized: string } | null>(null);
+
+  // Plagiarism
+  const [plagiarismRunning, setPlagiarismRunning] = useState(false);
+  const [plagiarismReport, setPlagiarismReport] = useState<{
+    overall_score: number;
+    summary: string;
+    flagged_passages: Array<{
+      excerpt: string;
+      concern_type: string;
+      reason: string;
+      severity: string;
+    }>;
+  } | null>(null);
+  const [plagiarismHighlightsVisible, setPlagiarismHighlightsVisible] = useState(true);
 
   // Chat
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
@@ -234,6 +251,68 @@ const EditorPage: React.FC = () => {
 
   const rejectHumanized = () => {
     setHumanizerResult(null);
+  };
+
+  // ===== PLAGIARISM =====
+  const runPlagiarismCheck = async () => {
+    if (!editorRef.current || plagiarismRunning) return;
+    const text = editorRef.current.innerText.trim();
+    if (text.length < 50) {
+      toast.error('Write at least 50 characters before running plagiarism check');
+      return;
+    }
+
+    setPlagiarismRunning(true);
+    setPlagiarismReport(null);
+    setShowPlagiarism(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('plagiarism', {
+        body: { text, documentId: id },
+      });
+
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+
+      setPlagiarismReport(data);
+      setPlagiarismHighlightsVisible(true);
+
+      // Save score to DB
+      if (id) {
+        await supabase
+          .from('documents')
+          .update({
+            plagiarism_score: data.overall_score,
+            plagiarism_data: data as unknown as Json,
+          })
+          .eq('id', id);
+        setDoc((prev) => prev ? { ...prev, plagiarism_score: data.overall_score, plagiarism_data: data as unknown as Json } : prev);
+      }
+
+      toast.success(`Plagiarism check complete: ${data.overall_score}% risk`);
+    } catch (err: any) {
+      toast.error(err.message || 'Plagiarism check failed');
+    } finally {
+      setPlagiarismRunning(false);
+    }
+  };
+
+  const getScoreColor = (score: number) => {
+    if (score <= 15) return 'text-teal';
+    if (score <= 40) return 'text-yellow-400';
+    return 'text-destructive';
+  };
+
+  const getScoreBg = (score: number) => {
+    if (score <= 15) return 'bg-teal/20';
+    if (score <= 40) return 'bg-yellow-500/20';
+    return 'bg-destructive/20';
+  };
+
+  const getSeverityColor = (severity: string) => {
+    if (severity === 'high') return 'border-destructive/60 bg-destructive/10';
+    if (severity === 'medium') return 'border-yellow-500/60 bg-yellow-500/10';
+    return 'border-muted-foreground/30 bg-muted/50';
   };
 
   // ===== CHAT =====
@@ -534,6 +613,113 @@ const EditorPage: React.FC = () => {
                     </p>
                   </div>
                 </>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Plagiarism Sidebar */}
+        {showPlagiarism && (
+          <div className="w-80 border-l border-border bg-card flex flex-col animate-slide-in-right overflow-auto">
+            <div className="p-4 border-b border-border flex items-center justify-between">
+              <h3 className="font-display font-semibold text-foreground text-sm flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-destructive" /> Plagiarism Check
+              </h3>
+              <button onClick={() => setShowPlagiarism(false)} className="text-muted-foreground hover:text-foreground">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="p-4 space-y-4">
+              <Button
+                className="w-full"
+                size="sm"
+                onClick={runPlagiarismCheck}
+                disabled={plagiarismRunning}
+                variant={plagiarismRunning ? 'secondary' : 'default'}
+              >
+                {plagiarismRunning ? (
+                  <><Loader2 className="w-4 h-4 mr-1 animate-spin" /> Analyzing...</>
+                ) : (
+                  <><ShieldCheck className="w-4 h-4 mr-1" /> Run Plagiarism Check</>
+                )}
+              </Button>
+
+              {plagiarismReport && (
+                <>
+                  {/* Score */}
+                  <div className={`rounded-lg p-4 text-center ${getScoreBg(plagiarismReport.overall_score)}`}>
+                    <div className={`text-3xl font-display font-bold ${getScoreColor(plagiarismReport.overall_score)}`}>
+                      {plagiarismReport.overall_score}%
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      {plagiarismReport.overall_score <= 15 ? 'Clean' :
+                       plagiarismReport.overall_score <= 40 ? 'Low Risk' :
+                       plagiarismReport.overall_score <= 70 ? 'Moderate Risk' : 'High Risk'}
+                    </div>
+                  </div>
+
+                  {/* Summary */}
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {plagiarismReport.summary}
+                  </p>
+
+                  {/* Toggle highlights */}
+                  <button
+                    onClick={() => setPlagiarismHighlightsVisible(!plagiarismHighlightsVisible)}
+                    className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors w-full"
+                  >
+                    {plagiarismHighlightsVisible ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
+                    {plagiarismHighlightsVisible ? 'Hide' : 'Show'} flagged passages
+                  </button>
+
+                  {/* Flagged passages */}
+                  {plagiarismHighlightsVisible && plagiarismReport.flagged_passages.length > 0 && (
+                    <div className="space-y-3">
+                      <h4 className="text-xs font-medium text-foreground">
+                        Flagged Passages ({plagiarismReport.flagged_passages.length})
+                      </h4>
+                      {plagiarismReport.flagged_passages.map((passage, i) => (
+                        <div
+                          key={i}
+                          className={`rounded-lg border p-3 space-y-2 ${getSeverityColor(passage.severity)}`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] uppercase tracking-wider font-medium text-muted-foreground">
+                              {passage.concern_type.replace('_', ' ')}
+                            </span>
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium capitalize ${
+                              passage.severity === 'high' ? 'bg-destructive/20 text-destructive' :
+                              passage.severity === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                              'bg-muted text-muted-foreground'
+                            }`}>
+                              {passage.severity}
+                            </span>
+                          </div>
+                          <p className="text-xs text-foreground/80 italic leading-relaxed">
+                            "{passage.excerpt}"
+                          </p>
+                          <p className="text-[11px] text-muted-foreground leading-relaxed">
+                            {passage.reason}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {plagiarismReport.flagged_passages.length === 0 && (
+                    <div className="text-center py-4 text-muted-foreground text-xs">
+                      <Check className="w-6 h-6 mx-auto mb-1 text-teal" />
+                      No flagged passages found.
+                    </div>
+                  )}
+                </>
+              )}
+
+              {!plagiarismReport && !plagiarismRunning && (
+                <p className="text-xs text-muted-foreground">
+                  Click "Run Plagiarism Check" to analyze your document for originality concerns, AI-generated patterns, and uncited claims.
+                </p>
               )}
             </div>
           </div>
