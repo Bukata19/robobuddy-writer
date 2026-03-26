@@ -606,9 +606,31 @@ const EditorPage: React.FC = () => {
               <Save className="w-4 h-4 mr-1" />
               <span className="hidden md:inline">{saving ? 'Saving...' : 'Save'}</span>
             </Button>
-            <Button variant="ghost" size="sm">
-              <Download className="w-4 h-4" />
-            </Button>
+            <div className="relative">
+              <Button variant="ghost" size="sm" onClick={() => setExportMenuOpen(!exportMenuOpen)} disabled={exporting}>
+                {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                <ChevronDown className="w-3 h-3 ml-0.5" />
+              </Button>
+              {exportMenuOpen && (
+                <>
+                  <div className="fixed inset-0 z-30" onClick={() => setExportMenuOpen(false)} />
+                  <div className="absolute right-0 top-full mt-1 w-40 bg-card border border-border rounded-lg shadow-lg z-40 overflow-hidden">
+                    <button
+                      onClick={exportToPdf}
+                      className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-foreground hover:bg-secondary transition-colors"
+                    >
+                      <FileDown className="w-4 h-4 text-destructive" /> Export as PDF
+                    </button>
+                    <button
+                      onClick={exportToDocx}
+                      className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-foreground hover:bg-secondary transition-colors"
+                    >
+                      <FileText className="w-4 h-4 text-primary" /> Export as DOCX
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </header>
