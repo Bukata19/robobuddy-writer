@@ -248,45 +248,37 @@ const EditorPage: React.FC = () => {
       const children: any[] = [];
       const nodes = editorRef.current.childNodes;
 
-      const processNode = (node: Node): any[] => {
-        const runs: any[] = [];
+      type RunInfo = { text: string; bold?: boolean; italics?: boolean; underline?: boolean };
+
+      const extractRuns = (node: Node, parentBold = false, parentItalic = false, parentUnderline = false): RunInfo[] => {
+        const runs: RunInfo[] = [];
         if (node.nodeType === Node.TEXT_NODE) {
           const text = node.textContent || '';
-          if (text.trim()) runs.push(new TextRun({ text }));
+          if (text) runs.push({ text, bold: parentBold, italics: parentItalic, underline: parentUnderline });
         } else if (node.nodeType === Node.ELEMENT_NODE) {
           const el = node as HTMLElement;
           const tag = el.tagName.toLowerCase();
           if (tag === 'br') {
-            runs.push(new TextRun({ text: '', break: 1 }));
+            runs.push({ text: '\n' });
           } else {
-            const isBold = tag === 'b' || tag === 'strong' || el.style.fontWeight === 'bold';
-            const isItalic = tag === 'i' || tag === 'em';
-            const isUnderline = tag === 'u';
-
-            if (el.childNodes.length === 0) {
-              const text = el.textContent || '';
-              if (text.trim()) runs.push(new TextRun({ text, bold: isBold, italics: isItalic, underline: isUnderline ? {} : undefined }));
-            } else {
-              el.childNodes.forEach((child) => {
-                const childRuns = processNode(child);
-                childRuns.forEach((r) => {
-                  if (r instanceof TextRun) {
-                    // Merge formatting from parent
-                    runs.push(new TextRun({
-                      text: (r as any).root?.[1]?.text || r.root?.[1]?.text || '',
-                      bold: isBold || (r as any).root?.[0]?.bold,
-                      italics: isItalic || (r as any).root?.[0]?.italics,
-                      underline: isUnderline ? {} : (r as any).root?.[0]?.underline,
-                    }));
-                  } else {
-                    runs.push(r);
-                  }
-                });
-              });
-            }
+            const isBold = parentBold || tag === 'b' || tag === 'strong';
+            const isItalic = parentItalic || tag === 'i' || tag === 'em';
+            const isUnderline = parentUnderline || tag === 'u';
+            el.childNodes.forEach((child) => {
+              runs.push(...extractRuns(child, isBold, isItalic, isUnderline));
+            });
           }
         }
         return runs;
+      };
+
+      const toTextRuns = (el: Element): any[] => {
+        const infos = extractRuns(el);
+        return infos.map(r =>
+          r.text === '\n'
+            ? new TextRun({ text: '', break: 1 })
+            : new TextRun({ text: r.text, bold: r.bold, italics: r.italics, underline: r.underline ? {} : undefined })
+        );
       };
 
       const processElement = (el: Element) => {
