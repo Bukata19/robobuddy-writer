@@ -14,7 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      documents: {
+        Row: {
+          content: Json | null
+          created_at: string
+          doc_type: Database["public"]["Enums"]["doc_type"]
+          id: string
+          plagiarism_data: Json | null
+          plagiarism_score: number | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content?: Json | null
+          created_at?: string
+          doc_type?: Database["public"]["Enums"]["doc_type"]
+          id?: string
+          plagiarism_data?: Json | null
+          plagiarism_score?: number | null
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: Json | null
+          created_at?: string
+          doc_type?: Database["public"]["Enums"]["doc_type"]
+          id?: string
+          plagiarism_data?: Json | null
+          plagiarism_score?: number | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +58,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      doc_type: "essay" | "research_paper" | "report" | "general"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +185,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      doc_type: ["essay", "research_paper", "report", "general"],
+    },
   },
 } as const
