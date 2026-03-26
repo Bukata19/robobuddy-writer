@@ -104,6 +104,8 @@ const EditorPage: React.FC = () => {
   const [title, setTitle] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [exportMenuOpen, setExportMenuOpen] = useState(false);
 
   // Sidebars
   const [chatOpen, setChatOpen] = useState(false);
