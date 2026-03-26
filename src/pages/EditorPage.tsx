@@ -206,7 +206,155 @@ const EditorPage: React.FC = () => {
     editorRef.current?.focus();
   };
 
-  // ===== HUMANIZER =====
+  // ===== EXPORT =====
+  const exportToPdf = async () => {
+    if (!editorRef.current) return;
+    setExporting(true);
+    setExportMenuOpen(false);
+    try {
+      const html2pdf = (await import('html2pdf.js')).default;
+      const element = editorRef.current.cloneNode(true) as HTMLElement;
+      // Apply white background for PDF
+      element.style.background = '#ffffff';
+      element.style.padding = '40px';
+      element.style.color = '#1a1a1a';
+
+      const opt = {
+        margin: 0.5,
+        filename: `${title || 'document'}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' as const },
+      };
+
+      await html2pdf().set(opt).from(element).save();
+      toast.success('PDF exported successfully!');
+    } catch (err) {
+      console.error('PDF export error:', err);
+      toast.error('Failed to export PDF');
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const exportToDocx = async () => {
+    if (!editorRef.current) return;
+    setExporting(true);
+    setExportMenuOpen(false);
+    try {
+      const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType: DocAlign } = await import('docx');
+      const { saveAs } = await import('file-saver');
+
+      const children: any[] = [];
+      const nodes = editorRef.current.childNodes;
+
+      const processNode = (node: Node): any[] => {
+        const runs: any[] = [];
+        if (node.nodeType === Node.TEXT_NODE) {
+          const text = node.textContent || '';
+          if (text.trim()) runs.push(new TextRun({ text }));
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          const el = node as HTMLElement;
+          const tag = el.tagName.toLowerCase();
+          if (tag === 'br') {
+            runs.push(new TextRun({ text: '', break: 1 }));
+          } else {
+            const isBold = tag === 'b' || tag === 'strong' || el.style.fontWeight === 'bold';
+            const isItalic = tag === 'i' || tag === 'em';
+            const isUnderline = tag === 'u';
+
+            if (el.childNodes.length === 0) {
+              const text = el.textContent || '';
+              if (text.trim()) runs.push(new TextRun({ text, bold: isBold, italics: isItalic, underline: isUnderline ? {} : undefined }));
+            } else {
+              el.childNodes.forEach((child) => {
+                const childRuns = processNode(child);
+                childRuns.forEach((r) => {
+                  if (r instanceof TextRun) {
+                    // Merge formatting from parent
+                    runs.push(new TextRun({
+                      text: (r as any).root?.[1]?.text || r.root?.[1]?.text || '',
+                      bold: isBold || (r as any).root?.[0]?.bold,
+                      italics: isItalic || (r as any).root?.[0]?.italics,
+                      underline: isUnderline ? {} : (r as any).root?.[0]?.underline,
+                    }));
+                  } else {
+                    runs.push(r);
+                  }
+                });
+              });
+            }
+          }
+        }
+        return runs;
+      };
+
+      const processElement = (el: Element) => {
+        const tag = el.tagName.toLowerCase();
+        const text = el.textContent?.trim() || '';
+
+        if (tag === 'h1') {
+          children.push(new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun({ text, bold: true, size: 32, font: 'Arial' })] }));
+        } else if (tag === 'h2') {
+          children.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun({ text, bold: true, size: 28, font: 'Arial' })] }));
+        } else if (tag === 'h3') {
+          children.push(new Paragraph({ heading: HeadingLevel.HEADING_3, children: [new TextRun({ text, bold: true, size: 24, font: 'Arial' })] }));
+        } else if (tag === 'ul' || tag === 'ol') {
+          el.querySelectorAll(':scope > li').forEach((li) => {
+            const liRuns = processNode(li);
+            children.push(new Paragraph({
+              children: liRuns.length > 0 ? liRuns : [new TextRun(li.textContent || '')],
+              bullet: tag === 'ul' ? { level: 0 } : undefined,
+              numbering: tag === 'ol' ? { reference: 'default-numbering', level: 0 } : undefined,
+            }));
+          });
+        } else if (tag === 'p' || tag === 'div') {
+          const runs = processNode(el);
+          if (runs.length > 0) {
+            children.push(new Paragraph({ children: runs, spacing: { after: 200 } }));
+          } else if (text) {
+            children.push(new Paragraph({ children: [new TextRun(text)], spacing: { after: 200 } }));
+          }
+        } else if (text) {
+          children.push(new Paragraph({ children: [new TextRun(text)], spacing: { after: 200 } }));
+        }
+      };
+
+      nodes.forEach((node) => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          processElement(node as Element);
+        } else if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
+          children.push(new Paragraph({ children: [new TextRun(node.textContent.trim())] }));
+        }
+      });
+
+      if (children.length === 0) {
+        children.push(new Paragraph({ children: [new TextRun('')] }));
+      }
+
+      const docFile = new Document({
+        sections: [{
+          properties: {
+            page: {
+              size: { width: 11906, height: 16838 },
+              margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 },
+            },
+          },
+          children,
+        }],
+      });
+
+      const buffer = await Packer.toBlob(docFile);
+      saveAs(buffer, `${title || 'document'}.docx`);
+      toast.success('DOCX exported successfully!');
+    } catch (err) {
+      console.error('DOCX export error:', err);
+      toast.error('Failed to export DOCX');
+    } finally {
+      setExporting(false);
+    }
+  };
+
   const getSelectedText = (): string => {
     const selection = window.getSelection();
     return selection ? selection.toString().trim() : '';
