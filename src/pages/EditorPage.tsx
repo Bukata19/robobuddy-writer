@@ -669,7 +669,7 @@ useEffect(() => {
         </div>
       </header>
 
-                                                <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+      <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div className="flex flex-1 overflow-hidden gap-0">
   {/* Main Editor Area - Takes available space */}
   <div className="flex-1 overflow-auto bg-slate/20 scrollbar-dark min-w-0">
