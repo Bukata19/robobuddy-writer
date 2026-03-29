@@ -214,7 +214,14 @@ const EditorPage: React.FC = () => {
     }, 30000);
     return () => clearInterval(interval);
   }, [saveDocument, id]);
-
+  
+// Auto-scroll chat to bottom when new messages arrive
+useEffect(() => {
+  if (chatScrollRef.current) {
+    chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
+  }
+}, [chatMessages]);
+  
   // Word count updater
   const updateWordCount = () => {
     if (editorRef.current) {
