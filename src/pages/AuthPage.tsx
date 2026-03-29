@@ -22,7 +22,7 @@ const AuthPage: React.FC = () => {
 
     try {
       if (isLogin) {
-        const { error } = await signIn(email, password);
+        const { error } = await signIn(email, password, rememberMe);
         if (error) {
           toast.error(error.message);
         } else {
@@ -150,7 +150,7 @@ const AuthPage: React.FC = () => {
         </div>
 
         <p className="text-center text-xs text-muted-foreground mt-6">
-          Secure authentication powered by Lovable Cloud
+          Secure authentication powered by Supabase
         </p>
       </div>
     </div>
@@ -158,3 +158,4 @@ const AuthPage: React.FC = () => {
 };
 
 export default AuthPage;
+      
