@@ -97,6 +97,9 @@ const Dashboard: React.FC = () => {
     const matchesType = filterType === 'all' || doc.doc_type === filterType;
     return matchesSearch && matchesType;
   });
+
+  return (
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
