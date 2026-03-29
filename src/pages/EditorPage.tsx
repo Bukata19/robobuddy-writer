@@ -686,7 +686,7 @@ useEffect(() => {
 
   {/* Humanizer Sidebar - Always visible when open */}
   {humanizerOpen && (
-    <div className="w-72 border-l border-border bg-card p-4 overflow-auto">
+  <div className="w-72 border-l border-border bg-card p-4 overflow-auto flex flex-col">
       {/* ... humanizer content ... */}
     </div>
   )}
