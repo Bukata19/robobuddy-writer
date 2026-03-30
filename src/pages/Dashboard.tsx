@@ -34,6 +34,7 @@ const docTypeConfig: Record<DocType, { label: string; icon: React.ReactNode; col
 };
 
 const getPlagiarismBadge = (score: number | null) => {
+  // Don't show badge for null or 0 (unchecked documents)
   if (score === null || score === 0) return null;
   if (score <= 15) return { label: `${score}% Clean`, className: 'bg-teal/20 text-teal' };
   if (score <= 40) return { label: `${score}% Warning`, className: 'bg-yellow-500/20 text-yellow-400' };
@@ -139,7 +140,7 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Documents */}
-        <h2 className="text-lg font-display font-semibold text-foreground mb-4">Your Documents</h2>
+        <h2 className="text-lg font-display font-semibold text-foreground mb-3">Your Documents</h2>
 
         {/* Search and filter */}
         <div className="flex gap-2 mb-4 flex-wrap">
@@ -150,12 +151,12 @@ const Dashboard: React.FC = () => {
             onChange={(e) => setSearch(e.target.value)}
             className="flex-1 min-w-[160px] bg-card border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
           />
-          <div className="flex gap-1">
+          <div className="flex gap-1 flex-wrap">
             {(['all', 'essay', 'research_paper', 'report', 'general'] as const).map((type) => (
               <button
                 key={type}
                 onClick={() => setFilterType(type)}
-                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors capitalize ${
+                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
                   filterType === type
                     ? 'bg-primary text-primary-foreground'
                     : 'bg-card border border-border text-muted-foreground hover:text-foreground'
