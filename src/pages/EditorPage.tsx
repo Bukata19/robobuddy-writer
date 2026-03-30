@@ -927,7 +927,7 @@ const EditorPage: React.FC = () => {
 
         {/* Export dropdown */}
         <div className="relative">
-          <Button variant="outline" size="sm" onClick={() => setExportMenuOpen(!exportMenuOpen)} disabled={exporting}>
+          <Button variant="outline" size="sm" onClick={() => setExportMenuOpen(!exportMenuOpen)} disabled={exporting} data-intro-id="export-btn">
             {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
             <span className="hidden sm:inline ml-1">Export</span>
             <ChevronDown className="w-3 h-3 ml-1" />
