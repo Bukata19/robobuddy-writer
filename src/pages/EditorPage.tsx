@@ -997,9 +997,13 @@ const EditorPage: React.FC = () => {
       {/* Mobile: Bottom toolbar with formatting + AI tools */}
       {isMobile && (
         <div className="border-t border-border bg-card flex items-center px-1 py-1 gap-0.5 shrink-0 overflow-x-auto">
-          {formatButtons}
+          <div data-intro-id="format-toolbar">
+            {formatButtons}
+          </div>
           <div className="w-px h-6 bg-border mx-1 shrink-0" />
-          {aiToolButtons}
+          <div data-intro-id="ai-tools">
+            {aiToolButtons}
+          </div>
         </div>
       )}
 
