@@ -105,6 +105,7 @@ const EditorPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const isMobile = useIsMobile();
   const [doc, setDoc] = useState<DocumentData | null>(null);
   const [title, setTitle] = useState('');
   const [loading, setLoading] = useState(true);
