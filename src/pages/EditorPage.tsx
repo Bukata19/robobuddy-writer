@@ -981,7 +981,7 @@ const EditorPage: React.FC = () => {
         {/* Desktop: Right AI tab bar + inline sidebar */}
         {!isMobile && (
           <>
-            <div className="w-10 border-l border-border bg-card flex flex-col items-center py-3 gap-2 shrink-0">
+            <div data-intro-id="ai-tools" className="w-10 border-l border-border bg-card flex flex-col items-center py-3 gap-2 shrink-0">
               {aiToolButtons}
             </div>
 
