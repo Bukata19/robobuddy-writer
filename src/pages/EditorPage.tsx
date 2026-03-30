@@ -2,12 +2,6 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import DOMPurify from 'dompurify';
-declare global {
-  interface Window {
-    DOMPurify: any;
-  }
-}
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
@@ -56,7 +50,7 @@ interface DocumentData {
 
 type ChatMessage = { role: 'user' | 'assistant'; content: string };
 
-
+const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 
 const templates: Record<DocType, string> = {
   essay: `<h1>Essay Title</h1>
@@ -111,8 +105,8 @@ const EditorPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [exporting, setExporting] = useState(false);
-  const [exportMenuOpen, setExportMenuOpen] = useState(false);
   const [wordCount, setWordCount] = useState(0);
+  const [exportMenuOpen, setExportMenuOpen] = useState(false);
 
   // Sidebars
   const [chatOpen, setChatOpen] = useState(false);
@@ -171,11 +165,11 @@ const EditorPage: React.FC = () => {
     setTimeout(() => {
       if (editorRef.current) {
         if (data.content && typeof data.content === 'string') {
-  editorRef.current.innerHTML = DOMPurify.sanitize(data.content);
+          editorRef.current.innerHTML = data.content;
         } else if (!data.content) {
           editorRef.current.innerHTML = templates[data.doc_type];
         }
-        // Initialise word count
+        // Initialise word count after content loads
         const text = editorRef.current.innerText.trim();
         setWordCount(text ? text.split(/\s+/).filter(Boolean).length : 0);
       }
@@ -220,20 +214,12 @@ const EditorPage: React.FC = () => {
     }, 30000);
     return () => clearInterval(interval);
   }, [saveDocument, id]);
-  
-// Auto-scroll chat to bottom when new messages arrive
-useEffect(() => {
-  if (chatScrollRef.current) {
-    chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
-  }
-}, [chatMessages]);
-  
-  // Word count updater
+
+  // Update word count on every keystroke
   const updateWordCount = () => {
     if (editorRef.current) {
       const text = editorRef.current.innerText.trim();
-      const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
-      setWordCount(words);
+      setWordCount(text ? text.split(/\s+/).filter(Boolean).length : 0);
     }
   };
 
@@ -512,25 +498,18 @@ useEffect(() => {
     try {
       const documentContent = editorRef.current?.innerText || '';
 
-      const { data: sessionData } = await supabase.auth.getSession();
-      const token = sessionData?.session?.access_token;
-
-      const resp = await fetch(
-  `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`,
-  {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-      apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-    },
-          body: JSON.stringify({
-            messages: newMessages,
-            documentContent,
-            plagiarismData: doc?.plagiarism_data,
-          }),
-        }
-      );
+      const resp = await fetch(CHAT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({
+          messages: newMessages,
+          documentContent,
+          plagiarismData: doc?.plagiarism_data,
+        }),
+      });
 
       if (resp.status === 429) {
         toast.error('Rate limit exceeded. Please wait and try again.');
@@ -604,133 +583,5 @@ useEffect(() => {
             const parsed = JSON.parse(jsonStr);
             const content = parsed.choices?.[0]?.delta?.content as string | undefined;
             if (content) upsertAssistant(content);
-          } catch {}
-        }
-      }
-    } catch (err: any) {
-      setChatMessages((prev) => [
-        ...prev.filter((m) => m.role !== 'assistant' || m.content !== ''),
-        { role: 'assistant', content: 'Sorry, something went wrong. Please try again.' },
-      ]);
-    } finally {
-      setChatLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (!doc) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="text-muted-foreground">Document not found.</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {/* Top Bar */}
-      <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-20">
-        <div className="flex items-center justify-between px-4 h-12">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => navigate('/dashboard')}>
-              <ArrowLeft className="w-4 h-4" />
-            </Button>
-            <Input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="bg-transparent border-none text-foreground font-display font-semibold text-sm h-8 w-48 md:w-72 focus-visible:ring-0 px-0"
-            />
-          </div>
-          <div className="flex items-center gap-1">
-            <span className="text-xs text-muted-foreground mr-2 hidden md:inline">{wordCount} words</span>
-            <Button variant="ghost" size="sm" onClick={saveDocument} disabled={saving}>
-              <Save className="w-4 h-4 mr-1" />
-              <span className="hidden md:inline">{saving ? 'Saving...' : 'Save'}</span>
-            </Button>
-            <div className="relative">
-              <Button variant="ghost" size="sm" onClick={() => setExportMenuOpen(!exportMenuOpen)} disabled={exporting}>
-                {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-                <ChevronDown className="w-3 h-3 ml-1" />
-              </Button>
-              {exportMenuOpen && (
-                <div className="absolute right-0 top-full mt-1 bg-card border border-border rounded-lg shadow-lg py-1 z-50 min-w-[160px]">
-                  <button onClick={exportToPdf} className="w-full px-3 py-2 text-sm text-foreground hover:bg-secondary flex items-center gap-2">
-                    <FileText className="w-4 h-4" /> Export as PDF
-                  </button>
-                  <button onClick={exportToDocx} className="w-full px-3 py-2 text-sm text-foreground hover:bg-secondary flex items-center gap-2">
-                    <FileDown className="w-4 h-4" /> Export as DOCX
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className="flex flex-1 overflow-hidden gap-0">
-  {/* Main Editor Area - Takes available space */}
-  <div className="flex-1 overflow-auto bg-slate/20 scrollbar-dark min-w-0">
-    {/* Toolbar */}
-    <div className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm border-b border-border px-4 py-1.5 flex items-center gap-1 flex-wrap md:static md:flex-nowrap">
-      {/* ... toolbar content ... */}
-    </div>
-
-    {/* A4 Canvas */}
-    <div className="p-4 md:p-8">
-      {/* ... editor content ... */}
-    </div>
-  </div>
-
-  {/* Humanizer Sidebar - Always visible when open */}
-  {humanizerOpen && (
-  <div className="w-72 border-l border-border bg-card p-4 overflow-auto flex flex-col">
-      {/* ... humanizer content ... */}
-    </div>
-  )}
-
-  {/* Plagiarism Sidebar - Always visible when open */}
-  {showPlagiarism && (
-  <div className="w-80 border-l border-border bg-card flex flex-col overflow-auto">
-      {/* ... plagiarism content ... */}
-    </div>
-  )}
-
-  {/* Chat Sidebar - Always visible when open */}
-  {chatOpen && (
-  <div className="w-80 border-l border-border bg-card flex flex-col overflow-hidden max-h-[calc(100vh-48px)]">
-      {/* ... chat content ... */}
-    </div>
-  )}
-</div>
-
-      {/* Mobile bottom toolbar */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border px-2 py-1.5 flex items-center justify-around z-20">
-        <button onClick={() => execCommand('bold')} className="p-2 text-muted-foreground">
-          <Bold className="w-5 h-5" />
-        </button>
-        <button onClick={() => execCommand('italic')} className="p-2 text-muted-foreground">
-          <Italic className="w-5 h-5" />
-        </button>
-        <button onClick={() => setHumanizerOpen(!humanizerOpen)} className="p-2 text-teal">
-          <Sparkles className="w-5 h-5" />
-        </button>
-        <button onClick={() => setChatOpen(!chatOpen)} className="p-2 text-teal">
-          <MessageCircle className="w-5 h-5" />
-        </button>
-        <button onClick={saveDocument} className="p-2 text-primary">
-          <Save className="w-5 h-5" />
-        </button>
-      </div>
-    </div>
-  );
-};
-
-export default EditorPage;
+          } catch { /* ignore */ }
+       
