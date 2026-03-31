@@ -964,7 +964,7 @@ const EditorPage: React.FC = () => {
         <span className="text-xs text-muted-foreground hidden sm:inline whitespace-nowrap">{wordCount} words</span>
 
         {/* Export dropdown */}
-        <div className="relative">
+        <div className="relative" ref={exportMenuRef}>
           <Button variant="outline" size="sm" onClick={() => setExportMenuOpen(!exportMenuOpen)} disabled={exporting} data-intro-id="export-btn">
             {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
             <span className="hidden sm:inline ml-1">Export</span>
