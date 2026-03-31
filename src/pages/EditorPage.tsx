@@ -249,6 +249,18 @@ const EditorPage: React.FC = () => {
     return () => clearInterval(interval);
   }, [saveDocument, id]);
 
+  // Close export menu on outside click
+  useEffect(() => {
+    if (!exportMenuOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (exportMenuRef.current && !exportMenuRef.current.contains(e.target as Node)) {
+        setExportMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [exportMenuOpen]);
+
   // Update word count on every keystroke
   const updateWordCount = () => {
     if (editorRef.current) {
