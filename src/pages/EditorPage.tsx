@@ -115,6 +115,7 @@ const EditorPage: React.FC = () => {
   const [exporting, setExporting] = useState(false);
   const [wordCount, setWordCount] = useState(0);
   const [exportMenuOpen, setExportMenuOpen] = useState(false);
+  const exportMenuRef = useRef<HTMLDivElement>(null);
 
   // Sidebars
   const [chatOpen, setChatOpen] = useState(false);
