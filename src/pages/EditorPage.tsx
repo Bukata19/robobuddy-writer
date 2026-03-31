@@ -60,46 +60,46 @@ type ChatMessage = { role: 'user' | 'assistant'; content: string };
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 
 const templates: Record<DocType, string> = {
-  essay: `<h1>Essay Title</h1>
-<h2>Introduction</h2>
+  essay: `<h1 data-placeholder="true">Essay Title</h1>
+<h2 data-placeholder="true">Introduction</h2>
 <p><em data-placeholder="true">Write your thesis statement and introduce the topic here...</em></p>
-<h2>Body Paragraph 1</h2>
+<h2 data-placeholder="true">Body Paragraph 1</h2>
 <p><em data-placeholder="true">Present your first main argument with supporting evidence...</em></p>
-<h2>Body Paragraph 2</h2>
+<h2 data-placeholder="true">Body Paragraph 2</h2>
 <p><em data-placeholder="true">Present your second main argument with supporting evidence...</em></p>
-<h2>Body Paragraph 3</h2>
+<h2 data-placeholder="true">Body Paragraph 3</h2>
 <p><em data-placeholder="true">Present your third main argument with supporting evidence...</em></p>
-<h2>Conclusion</h2>
+<h2 data-placeholder="true">Conclusion</h2>
 <p><em data-placeholder="true">Summarize your arguments and restate your thesis...</em></p>`,
-  research_paper: `<h1>Research Paper Title</h1>
-<h2>Abstract</h2>
+  research_paper: `<h1 data-placeholder="true">Research Paper Title</h1>
+<h2 data-placeholder="true">Abstract</h2>
 <p><em data-placeholder="true">Provide a brief summary of the research (150-300 words)...</em></p>
-<h2>Introduction</h2>
+<h2 data-placeholder="true">Introduction</h2>
 <p><em data-placeholder="true">Introduce the research problem, background, and objectives...</em></p>
-<h2>Literature Review</h2>
+<h2 data-placeholder="true">Literature Review</h2>
 <p><em data-placeholder="true">Review relevant existing research and identify gaps...</em></p>
-<h2>Methodology</h2>
+<h2 data-placeholder="true">Methodology</h2>
 <p><em data-placeholder="true">Describe your research methods, data collection, and analysis approach...</em></p>
-<h2>Results</h2>
+<h2 data-placeholder="true">Results</h2>
 <p><em data-placeholder="true">Present your findings with data, tables, or figures...</em></p>
-<h2>Discussion</h2>
+<h2 data-placeholder="true">Discussion</h2>
 <p><em data-placeholder="true">Interpret results, compare with existing literature, discuss limitations...</em></p>
-<h2>Conclusion</h2>
+<h2 data-placeholder="true">Conclusion</h2>
 <p><em data-placeholder="true">Summarize key findings and suggest future research directions...</em></p>
-<h2>References</h2>
+<h2 data-placeholder="true">References</h2>
 <p><em data-placeholder="true">List all cited sources in proper format...</em></p>`,
-  report: `<h1>Report Title</h1>
-<h2>Executive Summary</h2>
+  report: `<h1 data-placeholder="true">Report Title</h1>
+<h2 data-placeholder="true">Executive Summary</h2>
 <p><em data-placeholder="true">Provide a concise overview of the report...</em></p>
-<h2>Introduction</h2>
+<h2 data-placeholder="true">Introduction</h2>
 <p><em data-placeholder="true">State the purpose and scope of the report...</em></p>
-<h2>Findings</h2>
+<h2 data-placeholder="true">Findings</h2>
 <p><em data-placeholder="true">Present your research findings and analysis...</em></p>
-<h2>Recommendations</h2>
+<h2 data-placeholder="true">Recommendations</h2>
 <p><em data-placeholder="true">Provide actionable recommendations based on findings...</em></p>
-<h2>Conclusion</h2>
+<h2 data-placeholder="true">Conclusion</h2>
 <p><em data-placeholder="true">Summarize the report and next steps...</em></p>`,
-  general: `<h1>Document Title</h1>
+  general: `<h1 data-placeholder="true">Document Title</h1>
 <p><em data-placeholder="true">Start writing here...</em></p>`,
 };
 
@@ -157,13 +157,19 @@ const EditorPage: React.FC = () => {
   // Remove placeholder <em> tags on first user interaction
   const clearPlaceholders = useCallback(() => {
     if (!hasPlaceholders || !editorRef.current) return;
-    const placeholders = editorRef.current.querySelectorAll('em[data-placeholder="true"]');
-    placeholders.forEach((em) => {
-      const parent = em.parentElement;
-      em.remove();
-      // If the parent paragraph is now empty, add a <br> so the cursor can land there
-      if (parent && !parent.textContent?.trim() && parent.tagName === 'P') {
-        parent.innerHTML = '<br>';
+    const allPlaceholders = editorRef.current.querySelectorAll('[data-placeholder="true"]');
+    allPlaceholders.forEach((el) => {
+      const tag = el.tagName.toLowerCase();
+      if (tag === 'em') {
+        const parent = el.parentElement;
+        el.remove();
+        if (parent && !parent.textContent?.trim() && parent.tagName === 'P') {
+          parent.innerHTML = '<br>';
+        }
+      } else {
+        // Headings: clear text content but keep the element so structure remains
+        el.innerHTML = '<br>';
+        el.removeAttribute('data-placeholder');
       }
     });
     setHasPlaceholders(false);
