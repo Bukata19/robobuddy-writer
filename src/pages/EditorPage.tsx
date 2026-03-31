@@ -62,45 +62,45 @@ const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 const templates: Record<DocType, string> = {
   essay: `<h1>Essay Title</h1>
 <h2>Introduction</h2>
-<p><em>Write your thesis statement and introduce the topic here...</em></p>
+<p><em data-placeholder="true">Write your thesis statement and introduce the topic here...</em></p>
 <h2>Body Paragraph 1</h2>
-<p><em>Present your first main argument with supporting evidence...</em></p>
+<p><em data-placeholder="true">Present your first main argument with supporting evidence...</em></p>
 <h2>Body Paragraph 2</h2>
-<p><em>Present your second main argument with supporting evidence...</em></p>
+<p><em data-placeholder="true">Present your second main argument with supporting evidence...</em></p>
 <h2>Body Paragraph 3</h2>
-<p><em>Present your third main argument with supporting evidence...</em></p>
+<p><em data-placeholder="true">Present your third main argument with supporting evidence...</em></p>
 <h2>Conclusion</h2>
-<p><em>Summarize your arguments and restate your thesis...</em></p>`,
+<p><em data-placeholder="true">Summarize your arguments and restate your thesis...</em></p>`,
   research_paper: `<h1>Research Paper Title</h1>
 <h2>Abstract</h2>
-<p><em>Provide a brief summary of the research (150-300 words)...</em></p>
+<p><em data-placeholder="true">Provide a brief summary of the research (150-300 words)...</em></p>
 <h2>Introduction</h2>
-<p><em>Introduce the research problem, background, and objectives...</em></p>
+<p><em data-placeholder="true">Introduce the research problem, background, and objectives...</em></p>
 <h2>Literature Review</h2>
-<p><em>Review relevant existing research and identify gaps...</em></p>
+<p><em data-placeholder="true">Review relevant existing research and identify gaps...</em></p>
 <h2>Methodology</h2>
-<p><em>Describe your research methods, data collection, and analysis approach...</em></p>
+<p><em data-placeholder="true">Describe your research methods, data collection, and analysis approach...</em></p>
 <h2>Results</h2>
-<p><em>Present your findings with data, tables, or figures...</em></p>
+<p><em data-placeholder="true">Present your findings with data, tables, or figures...</em></p>
 <h2>Discussion</h2>
-<p><em>Interpret results, compare with existing literature, discuss limitations...</em></p>
+<p><em data-placeholder="true">Interpret results, compare with existing literature, discuss limitations...</em></p>
 <h2>Conclusion</h2>
-<p><em>Summarize key findings and suggest future research directions...</em></p>
+<p><em data-placeholder="true">Summarize key findings and suggest future research directions...</em></p>
 <h2>References</h2>
-<p><em>List all cited sources in proper format...</em></p>`,
+<p><em data-placeholder="true">List all cited sources in proper format...</em></p>`,
   report: `<h1>Report Title</h1>
 <h2>Executive Summary</h2>
-<p><em>Provide a concise overview of the report...</em></p>
+<p><em data-placeholder="true">Provide a concise overview of the report...</em></p>
 <h2>Introduction</h2>
-<p><em>State the purpose and scope of the report...</em></p>
+<p><em data-placeholder="true">State the purpose and scope of the report...</em></p>
 <h2>Findings</h2>
-<p><em>Present your research findings and analysis...</em></p>
+<p><em data-placeholder="true">Present your research findings and analysis...</em></p>
 <h2>Recommendations</h2>
-<p><em>Provide actionable recommendations based on findings...</em></p>
+<p><em data-placeholder="true">Provide actionable recommendations based on findings...</em></p>
 <h2>Conclusion</h2>
-<p><em>Summarize the report and next steps...</em></p>`,
+<p><em data-placeholder="true">Summarize the report and next steps...</em></p>`,
   general: `<h1>Document Title</h1>
-<p><em>Start writing here...</em></p>`,
+<p><em data-placeholder="true">Start writing here...</em></p>`,
 };
 
 const EditorPage: React.FC = () => {
