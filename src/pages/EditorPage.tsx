@@ -1004,14 +1004,14 @@ const EditorPage: React.FC = () => {
         )}
 
         {/* Editor Canvas — always takes remaining space */}
-        <div className="flex-1 overflow-auto bg-muted/30 flex justify-center py-4 sm:py-8 px-2 sm:px-4">
+        <div className="flex-1 overflow-auto bg-muted/30 flex justify-center py-6 sm:py-10 px-3 sm:px-6">
           <div
             ref={editorRef}
             contentEditable
             suppressContentEditableWarning
             onInput={updateWordCount}
             onKeyDown={clearPlaceholders}
-            className="bg-card w-full max-w-[816px] min-h-[600px] sm:min-h-[1056px] p-6 sm:p-16 shadow-lg rounded-sm border border-border text-foreground prose prose-sm max-w-none focus:outline-none"
+            className="bg-card w-full max-w-[816px] min-h-[600px] sm:min-h-[1056px] p-6 sm:p-16 shadow-lg rounded-sm border border-border text-foreground prose prose-invert prose-sm max-w-none focus:outline-none focus:ring-1 focus:ring-primary/30"
             data-intro-id="editor-canvas"
             style={{ fontFamily: 'Georgia, serif', lineHeight: 1.8, fontSize: '14px' }}
           />
