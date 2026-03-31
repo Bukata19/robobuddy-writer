@@ -180,3 +180,11 @@
 .introjs-helperLayer {
   border-radius: 0.5rem !important;
 }
+
+/* Editor placeholder descriptions */
+em[data-placeholder="true"] {
+  color: hsl(var(--muted-foreground) / 0.5);
+  font-style: italic;
+  pointer-events: none;
+  user-select: none;
+}
