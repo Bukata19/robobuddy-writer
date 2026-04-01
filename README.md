@@ -153,7 +153,7 @@ All functions require a valid Supabase Bearer token. Rate limiting and credit er
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/robobuddy-writer.git
+git clone https://github.com/Bukata19/robobuddy-writer.git
 cd robobuddy-writer
 ```
 
