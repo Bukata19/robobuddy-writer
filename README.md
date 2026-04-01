@@ -96,7 +96,7 @@ Accessible from the Dashboard header:
 | **Routing** | React Router v6 |
 | **State / Data** | TanStack Query v5 |
 | **Backend** | Supabase (Auth, PostgreSQL, Edge Functions) |
-| **AI** | Claude API via Supabase Edge Functions |
+| **AI** | Gemini API via Supabase Edge Functions |
 | **Export** | html2pdf.js (PDF), docx (DOCX) |
 | **Notifications** | Sonner |
 | **Onboarding** | Intro.js |
@@ -135,8 +135,8 @@ CREATE TABLE public.documents (
 
 | Function | Endpoint | Description |
 |---|---|---|
-| `chat` | `/functions/v1/chat` | Proxies Claude API for the AI writing assistant |
-| `humanizer` | `/functions/v1/humanizer` | Rewrites text at selected intensity using Claude |
+| `chat` | `/functions/v1/chat` | Proxies Gemini API for the AI writing assistant |
+| `humanizer` | `/functions/v1/humanizer` | Rewrites text at selected intensity using Gemini |
 | `plagiarism` | `/functions/v1/plagiarism` | Analyses originality and returns structured JSON report |
 
 All functions require a valid Supabase Bearer token. Rate limiting and credit error handling are included.
@@ -148,7 +148,7 @@ All functions require a valid Supabase Bearer token. Rate limiting and credit er
 ### Prerequisites
 - [Node.js](https://nodejs.org) 18+ or [Bun](https://bun.sh)
 - A [Supabase](https://supabase.com) project
-- A Claude API key (via Anthropic or Lovable AI gateway)
+- A Gemini API key (via Gemini or Lovable AI gateway)
 
 ### 1. Clone the repository
 
@@ -301,7 +301,6 @@ npx playwright test
 - [ ] Document version history
 - [ ] Mobile-optimised bottom sheet panels
 - [ ] Dark/light theme toggle
-- [ ] Zambian Kwacha pricing tiers (Free / Pro / Premium)
 
 ---
 
@@ -325,8 +324,8 @@ This project is private and proprietary. All rights reserved.
 
 ## 👤 Author
 
-Built by **Sashi** — a student developer building practical AI tools for students.
+Built by **Sashi** — a student building practical AI tools for students.
 
-> *"Write smarter. Sound human. Stay original."*
+> *"Write smarter. Simply Just That."*
 
 [![Live App](https://img.shields.io/badge/Open%20RobAssister-00d4b8?style=for-the-badge)](https://robobuddy-writer.lovable.app)
