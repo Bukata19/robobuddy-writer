@@ -1028,6 +1028,15 @@ const EditorPage: React.FC = () => {
           <TooltipContent>Version History</TooltipContent>
         </Tooltip>
 
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost" size="icon" onClick={() => setFocusMode(!focusMode)} className="scale-click">
+              {focusMode ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>{focusMode ? 'Exit Focus Mode' : 'Focus Mode'}</TooltipContent>
+        </Tooltip>
+
         <Button onClick={saveDocument} disabled={saving} size="sm" data-intro-id="save-btn" className="btn-glow">
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           <span className="hidden sm:inline ml-1">Save</span>
