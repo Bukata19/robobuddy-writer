@@ -717,9 +717,17 @@ const EditorPage: React.FC = () => {
     );
   }
 
-  const activeSidebar = chatOpen ? 'chat' : humanizerOpen ? 'humanizer' : showPlagiarism ? 'plagiarism' : null;
+  const activeSidebar = chatOpen ? 'chat' : humanizerOpen ? 'humanizer' : showPlagiarism ? 'plagiarism' : showHistory ? 'history' : null;
 
   const closeSidebar = () => {
+    setChatOpen(false);
+    setHumanizerOpen(false);
+    setShowPlagiarism(false);
+    setShowHistory(false);
+  };
+
+  const openHistory = () => {
+    setShowHistory(true);
     setChatOpen(false);
     setHumanizerOpen(false);
     setShowPlagiarism(false);
