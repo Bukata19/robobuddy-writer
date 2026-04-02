@@ -974,6 +974,15 @@ const EditorPage: React.FC = () => {
           )}
         </div>
 
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost" size="icon" onClick={openHistory} className="scale-click">
+              <History className="w-4 h-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Version History</TooltipContent>
+        </Tooltip>
+
         <Button onClick={saveDocument} disabled={saving} size="sm" data-intro-id="save-btn" className="btn-glow">
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           <span className="hidden sm:inline ml-1">Save</span>
