@@ -1044,30 +1044,30 @@ const EditorPage: React.FC = () => {
       </header>
 
       {/* Main content area */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className={`flex flex-1 overflow-hidden ${focusMode ? 'pt-14' : ''}`}>
         {/* Desktop: Left formatting toolbar */}
-        {!isMobile && (
+        {!isMobile && !focusMode && (
           <div data-intro-id="format-toolbar" className="w-12 border-r border-border bg-card/50 toolbar-glow flex flex-col items-center py-3 gap-1 shrink-0 overflow-y-auto scrollbar-dark">
             {formatButtons}
           </div>
         )}
 
         {/* Editor Canvas */}
-        <div className="flex-1 overflow-auto bg-muted/30 flex justify-center py-6 sm:py-10 px-3 sm:px-6 scrollbar-dark">
+        <div className={`flex-1 overflow-auto flex justify-center py-6 sm:py-10 px-3 sm:px-6 scrollbar-dark transition-colors duration-500 ${focusMode ? 'bg-background' : 'bg-muted/30'}`}>
           <div
             ref={editorRef}
             contentEditable
             suppressContentEditableWarning
             onInput={updateWordCount}
             onKeyDown={clearPlaceholders}
-            className={`bg-card w-full ${canvasMaxW} min-h-[600px] sm:min-h-[1056px] p-6 sm:p-16 shadow-lg rounded-lg border border-border text-foreground prose prose-invert prose-sm max-w-none focus:outline-none focus:ring-2 focus:ring-primary/20 transition-shadow`}
+            className={`bg-card w-full ${focusMode ? 'max-w-[720px] border-transparent shadow-none' : canvasMaxW + ' shadow-lg border border-border'} min-h-[600px] sm:min-h-[1056px] p-6 sm:p-16 rounded-lg text-foreground prose prose-invert prose-sm max-w-none focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-500`}
             data-intro-id="editor-canvas"
             style={{ fontFamily: 'Georgia, serif', lineHeight, fontSize: 'var(--editor-font-size)' }}
           />
         </div>
 
         {/* Desktop: Right AI tab bar + inline sidebar */}
-        {!isMobile && (
+        {!isMobile && !focusMode && (
           <>
             <div data-intro-id="ai-tools" className="w-10 border-l border-border bg-card/50 toolbar-glow flex flex-col items-center py-3 gap-2 shrink-0">
               {aiToolButtons}
@@ -1082,8 +1082,22 @@ const EditorPage: React.FC = () => {
         )}
       </div>
 
+      {/* Focus mode: floating exit button */}
+      {focusMode && (
+        <div className="fixed bottom-6 right-6 z-50 opacity-30 hover:opacity-100 transition-opacity duration-300">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="outline" size="icon" onClick={() => setFocusMode(false)} className="rounded-full shadow-lg bg-card/80 backdrop-blur-sm">
+                <Minimize className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="left">Exit Focus Mode</TooltipContent>
+          </Tooltip>
+        </div>
+      )}
+
       {/* Mobile: Bottom toolbar */}
-      {isMobile && (
+      {isMobile && !focusMode && (
         <div className="border-t border-border bg-card/80 backdrop-blur-sm flex items-center px-1 py-1.5 gap-0.5 shrink-0 overflow-x-auto scrollbar-dark">
           <div data-intro-id="format-toolbar" className="flex items-center gap-0.5 shrink-0">
             {formatButtons}
