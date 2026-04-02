@@ -888,6 +888,20 @@ const EditorPage: React.FC = () => {
           onClose={() => setShowHistory(false)}
         />
       )}
+
+      {/* Outline Sidebar */}
+      {showOutline && doc && (
+        <OutlinePanel
+          docType={doc.doc_type}
+          onInsert={(html) => {
+            if (editorRef.current) {
+              editorRef.current.innerHTML = html;
+              updateWordCount();
+            }
+          }}
+          onClose={() => setShowOutline(false)}
+        />
+      )}
     </div>
   );
 
