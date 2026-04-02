@@ -939,13 +939,26 @@ const EditorPage: React.FC = () => {
           <Button
             variant={showPlagiarism ? 'default' : 'ghost'}
             size="icon"
-            onClick={() => { setShowPlagiarism(!showPlagiarism); setChatOpen(false); setHumanizerOpen(false); }}
+            onClick={() => { setShowPlagiarism(!showPlagiarism); setChatOpen(false); setHumanizerOpen(false); setShowOutline(false); }}
             className="scale-click"
           >
             <ShieldCheck className="w-4 h-4" />
           </Button>
         </TooltipTrigger>
         <TooltipContent side="left">Plagiarism Check</TooltipContent>
+      </Tooltip>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant={showOutline ? 'default' : 'ghost'}
+            size="icon"
+            onClick={openOutline}
+            className="scale-click"
+          >
+            <ListTree className="w-4 h-4" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="left">AI Outline</TooltipContent>
       </Tooltip>
     </>
   );
