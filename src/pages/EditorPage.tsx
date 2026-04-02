@@ -135,6 +135,7 @@ const EditorPage: React.FC = () => {
   const [chatOpen, setChatOpen] = useState(false);
   const [humanizerOpen, setHumanizerOpen] = useState(false);
   const [showPlagiarism, setShowPlagiarism] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
 
   // Humanizer
   const [humanizerIntensity, setHumanizerIntensity] = useState(settings.defaultHumanizerIntensity);
