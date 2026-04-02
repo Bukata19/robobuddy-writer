@@ -725,13 +725,14 @@ const EditorPage: React.FC = () => {
     );
   }
 
-  const activeSidebar = chatOpen ? 'chat' : humanizerOpen ? 'humanizer' : showPlagiarism ? 'plagiarism' : showHistory ? 'history' : null;
+  const activeSidebar = chatOpen ? 'chat' : humanizerOpen ? 'humanizer' : showPlagiarism ? 'plagiarism' : showHistory ? 'history' : showOutline ? 'outline' : null;
 
   const closeSidebar = () => {
     setChatOpen(false);
     setHumanizerOpen(false);
     setShowPlagiarism(false);
     setShowHistory(false);
+    setShowOutline(false);
   };
 
   const openHistory = () => {
@@ -739,6 +740,15 @@ const EditorPage: React.FC = () => {
     setChatOpen(false);
     setHumanizerOpen(false);
     setShowPlagiarism(false);
+    setShowOutline(false);
+  };
+
+  const openOutline = () => {
+    setShowOutline(true);
+    setChatOpen(false);
+    setHumanizerOpen(false);
+    setShowPlagiarism(false);
+    setShowHistory(false);
   };
 
   const lineHeight = settings.lineSpacing === 'relaxed' ? 2.2 : 1.8;
