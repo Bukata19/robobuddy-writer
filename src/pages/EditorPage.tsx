@@ -1034,11 +1034,11 @@ const EditorPage: React.FC = () => {
 
       {/* Mobile: Sheet overlay for AI sidebar */}
       {isMobile && (
-        <Sheet open={!!activeSidebar} onOpenChange={(open) => { if (!open) closeSidebar(); }}>
-          <SheetContent side="bottom" className="h-[75vh] p-0 flex flex-col">
+        <Drawer open={!!activeSidebar} onOpenChange={(open) => { if (!open) closeSidebar(); }}>
+          <DrawerContent className="h-[75vh] max-h-[75vh] p-0 flex flex-col">
             {sidebarContent}
-          </SheetContent>
-        </Sheet>
+          </DrawerContent>
+        </Drawer>
       )}
     </div>
   );
