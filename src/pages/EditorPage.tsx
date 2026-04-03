@@ -148,6 +148,9 @@ const EditorPage: React.FC = () => {
   const [humanizerIntensity, setHumanizerIntensity] = useState(settings.defaultHumanizerIntensity);
   const [humanizing, setHumanizing] = useState(false);
   const [humanizerResult, setHumanizerResult] = useState<{ original: string; humanized: string } | null>(null);
+  const [wordCountMode, setWordCountMode] = useState<'unchanged' | 'preset' | 'custom'>('unchanged');
+  const [presetWordCount, setPresetWordCount] = useState<number>(500);
+  const [customWordCount, setCustomWordCount] = useState<string>('');
 
   // Plagiarism
   const [plagiarismRunning, setPlagiarismRunning] = useState(false);
