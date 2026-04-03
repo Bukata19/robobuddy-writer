@@ -961,7 +961,7 @@ const EditorPage: React.FC = () => {
             <ListTree className="w-4 h-4" />
           </Button>
         </TooltipTrigger>
-        <TooltipContent side="left">AI Outline</TooltipContent>
+        <TooltipContent side="left">Document Generator</TooltipContent>
       </Tooltip>
     </>
   );
