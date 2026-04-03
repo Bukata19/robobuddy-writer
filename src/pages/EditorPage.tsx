@@ -478,8 +478,9 @@ const EditorPage: React.FC = () => {
     setHumanizerOpen(true);
 
     try {
+      const twc = wordCountMode === 'preset' ? presetWordCount : wordCountMode === 'custom' ? (parseInt(customWordCount) || null) : null;
       const { data, error } = await supabase.functions.invoke('humanizer', {
-        body: { text: selectedText, intensity: humanizerIntensity },
+        body: { text: selectedText, intensity: humanizerIntensity, docType: doc?.doc_type || 'general', targetWordCount: twc },
       });
 
       if (error) throw error;
