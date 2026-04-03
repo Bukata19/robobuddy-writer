@@ -958,7 +958,7 @@ const EditorPage: React.FC = () => {
             onClick={openOutline}
             className="scale-click"
           >
-            <ListTree className="w-4 h-4" />
+            <FileText className="w-4 h-4" />
           </Button>
         </TooltipTrigger>
         <TooltipContent side="left">Document Generator</TooltipContent>
