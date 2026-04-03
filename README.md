@@ -296,7 +296,8 @@ npx playwright test
 ## 🔮 Planned Upgrades
 
 - [ ] TipTap rich-text editor integration
-- [ ] Real-time collaborative editing (Liveblocks)
+- [ ] AI document Generator
+- [ ] Major Humanizer overhaul 
 - [ ] Citation generator (APA / MLA / Harvard)
 - [ ] Document version history
 - [ ] Mobile-optimised bottom sheet panels
