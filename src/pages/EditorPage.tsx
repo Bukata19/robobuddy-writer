@@ -46,7 +46,6 @@ import {
   History,
   Maximize,
   Minimize,
-  ListTree,
 } from 'lucide-react';
 import type { Json } from '@/integrations/supabase/types';
 
@@ -958,10 +957,10 @@ const EditorPage: React.FC = () => {
             onClick={openOutline}
             className="scale-click"
           >
-            <ListTree className="w-4 h-4" />
+            <FileText className="w-4 h-4" />
           </Button>
         </TooltipTrigger>
-        <TooltipContent side="left">AI Outline</TooltipContent>
+        <TooltipContent side="left">Document Generator</TooltipContent>
       </Tooltip>
     </>
   );
@@ -979,7 +978,7 @@ const EditorPage: React.FC = () => {
       <ToolbarButton onClick={() => execCommand('justifyLeft')} title="Align Left" icon={<AlignLeft className="w-4 h-4" />} />
       <ToolbarButton onClick={() => execCommand('justifyCenter')} title="Align Center" icon={<AlignCenter className="w-4 h-4" />} />
       <div className="w-px h-6 bg-border my-1" />
-      <ToolbarButton onClick={openOutline} title="AI Outline" icon={<ListTree className="w-4 h-4" />} />
+      <ToolbarButton onClick={openOutline} title="Document Generator" icon={<FileText className="w-4 h-4" />} />
     </>
   );
 
