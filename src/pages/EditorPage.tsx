@@ -217,8 +217,8 @@ const EditorPage: React.FC = () => {
     autofocus: true,
     editorProps: {
       attributes: {
-        class: 'prose prose-invert prose-sm max-w-none focus:outline-none',
-        style: 'font-family: Georgia, serif; min-height: 100%;',
+        class: 'prose prose-invert prose-sm max-w-none focus:outline-none min-h-full',
+        style: 'font-family: Georgia, serif; min-height: 100%; caret-color: hsl(var(--primary));',
       },
     },
     onUpdate: ({ editor: ed }) => {
