@@ -1094,8 +1094,12 @@ const EditorPage: React.FC = () => {
       <ToolbarButton onClick={() => editor.chain().focus().toggleOrderedList().run()} title="Numbered List" icon={<ListOrdered className="w-4 h-4" />} active={editor.isActive('orderedList')} />
       <ToolbarButton onClick={() => editor.chain().focus().setTextAlign('left').run()} title="Align Left" icon={<AlignLeft className="w-4 h-4" />} active={editor.isActive({ textAlign: 'left' })} />
       <ToolbarButton onClick={() => editor.chain().focus().setTextAlign('center').run()} title="Align Center" icon={<AlignCenter className="w-4 h-4" />} active={editor.isActive({ textAlign: 'center' })} />
-      <div className="w-px h-6 bg-border my-1" />
-      <ToolbarButton onClick={openOutline} title="Document Generator" icon={<FileText className="w-4 h-4" />} />
+      {!isMobile && (
+        <>
+          <div className="w-px h-6 bg-border my-1" />
+          <ToolbarButton onClick={openOutline} title="Document Generator" icon={<FileText className="w-4 h-4" />} />
+        </>
+      )}
     </>
   ) : null;
 
@@ -1221,11 +1225,11 @@ const EditorPage: React.FC = () => {
 
       {/* Mobile: Bottom toolbar */}
       {isMobile && !focusMode && (
-        <div className="border-t border-border bg-card/80 backdrop-blur-sm flex items-center px-1 py-1.5 gap-0.5 shrink-0 overflow-x-auto scrollbar-dark">
+        <div className="border-t border-border bg-card/90 backdrop-blur-sm flex items-center px-1.5 py-2 gap-1 shrink-0 overflow-x-auto scrollbar-dark safe-area-bottom">
           <div data-intro-id="format-toolbar" className="flex items-center gap-0.5 shrink-0">
             {formatButtons}
           </div>
-          <div className="w-px h-6 bg-border mx-1 shrink-0" />
+          <div className="w-px h-6 bg-border mx-1.5 shrink-0" />
           <div data-intro-id="ai-tools" className="flex items-center gap-0.5 shrink-0">
             {aiToolButtons}
           </div>
