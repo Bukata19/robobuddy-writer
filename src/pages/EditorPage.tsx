@@ -217,8 +217,8 @@ const EditorPage: React.FC = () => {
     autofocus: true,
     editorProps: {
       attributes: {
-        class: 'prose prose-invert prose-sm max-w-none focus:outline-none',
-        style: 'font-family: Georgia, serif; min-height: 100%;',
+        class: 'prose prose-invert prose-sm max-w-none focus:outline-none min-h-full',
+        style: 'font-family: Georgia, serif; min-height: 100%; caret-color: hsl(var(--primary));',
       },
     },
     onUpdate: ({ editor: ed }) => {
@@ -548,39 +548,51 @@ const EditorPage: React.FC = () => {
       if (data.flagged_passages && editor) {
         const fullText = editor.getText();
         // Remove old highlights first
-        editor.chain().focus().selectAll().unsetMark('plagiarismHighlight').run();
+        editor.chain().selectAll().unsetMark('plagiarismHighlight').run();
         
         for (const passage of data.flagged_passages) {
           const excerpt = passage.excerpt;
           const idx = fullText.indexOf(excerpt);
           if (idx >= 0) {
-            // Convert text offset to prosemirror position
-            let pos = 0;
-            let found = false;
+            // Build a text-offset-to-prosemirror-position map
+            let textOffset = 0;
+            const posMap: { textStart: number; textEnd: number; nodePos: number }[] = [];
             editor.state.doc.descendants((node, nodePos) => {
-              if (found) return false;
               if (node.isText) {
-                const nodeText = node.text || '';
-                const textStart = pos;
-                const textEnd = pos + nodeText.length;
-                const excerptStart = idx;
-                const excerptEnd = idx + excerpt.length;
-                if (excerptStart >= textStart && excerptStart < textEnd) {
-                  const from = nodePos + (excerptStart - textStart);
-                  const to = Math.min(nodePos + (excerptEnd - textStart), nodePos + nodeText.length);
-                  editor.chain()
-                    .setTextSelection({ from, to })
-                    .setMark('plagiarismHighlight', { severity: passage.severity === 'high' ? 'high' : 'medium' })
-                    .run();
-                  found = true;
-                }
-                pos += nodeText.length;
+                const len = node.text?.length || 0;
+                posMap.push({ textStart: textOffset, textEnd: textOffset + len, nodePos });
+                textOffset += len;
+              } else if (node.isBlock && textOffset > 0) {
+                // Account for block boundaries that getText() renders as separators
+                textOffset += 1;
               }
             });
+
+            const excerptStart = idx;
+            const excerptEnd = idx + excerpt.length;
+            let from: number | null = null;
+            let to: number | null = null;
+
+            for (const entry of posMap) {
+              if (from === null && excerptStart >= entry.textStart && excerptStart < entry.textEnd) {
+                from = entry.nodePos + (excerptStart - entry.textStart);
+              }
+              if (excerptEnd > entry.textStart && excerptEnd <= entry.textEnd) {
+                to = entry.nodePos + (excerptEnd - entry.textStart);
+              }
+            }
+
+            if (from !== null && to !== null && from < to) {
+              editor.chain()
+                .setTextSelection({ from, to })
+                .setMark('plagiarismHighlight', { severity: passage.severity === 'high' ? 'high' : 'medium' })
+                .run();
+            }
           }
         }
-        // Deselect
-        editor.commands.setTextSelection(0);
+        // Deselect - position 1 is the first valid position inside the doc
+        const docSize = editor.state.doc.content.size;
+        editor.commands.setTextSelection(Math.min(1, docSize));
       }
 
       if (id) {
@@ -1168,7 +1180,12 @@ const EditorPage: React.FC = () => {
             data-intro-id="editor-canvas"
             style={{ lineHeight, fontSize: 'var(--editor-font-size)' }}
           >
-            <EditorContent editor={editor} className="h-full" style={{ fontFamily: 'Georgia, serif' }} />
+            <EditorContent
+              editor={editor}
+              className="h-full cursor-text"
+              style={{ fontFamily: 'Georgia, serif' }}
+              onClick={() => { if (editor && !editor.isFocused) editor.commands.focus('end'); }}
+            />
           </div>
         </div>
 
