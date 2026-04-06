@@ -1223,15 +1223,16 @@ const EditorPage: React.FC = () => {
         </div>
       )}
 
-      {/* Mobile: Bottom toolbar */}
+      {/* Mobile: Bottom toolbar — two rows */}
       {isMobile && !focusMode && (
-        <div className="border-t border-border bg-card/90 backdrop-blur-sm flex items-center px-1.5 py-2 gap-1 shrink-0 overflow-x-auto scrollbar-dark safe-area-bottom">
-          <div data-intro-id="format-toolbar" className="flex items-center gap-0.5 shrink-0">
-            {formatButtons}
-          </div>
-          <div className="w-px h-6 bg-border mx-1.5 shrink-0" />
-          <div data-intro-id="ai-tools" className="flex items-center gap-0.5 shrink-0">
+        <div className="border-t border-border bg-card/90 backdrop-blur-sm shrink-0 safe-area-bottom">
+          {/* Row 1: AI tool buttons */}
+          <div data-intro-id="ai-tools" className="flex items-center justify-center gap-1 px-2 py-1.5 border-b border-border/50">
             {aiToolButtons}
+          </div>
+          {/* Row 2: Formatting buttons */}
+          <div data-intro-id="format-toolbar" className="flex items-center gap-0.5 px-1.5 py-1.5 overflow-x-auto scrollbar-dark">
+            {formatButtons}
           </div>
         </div>
       )}
