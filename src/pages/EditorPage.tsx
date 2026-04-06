@@ -1025,6 +1025,14 @@ const EditorPage: React.FC = () => {
   );
 
   // ===== AI tool buttons =====
+  const openChat = () => { setChatOpen(true); setHumanizerOpen(false); setShowPlagiarism(false); setShowHistory(false); setShowOutline(false); };
+  const openHumanizer = () => { setHumanizerOpen(true); setChatOpen(false); setShowPlagiarism(false); setShowHistory(false); setShowOutline(false); };
+  const openPlagiarism = () => { setShowPlagiarism(true); setChatOpen(false); setHumanizerOpen(false); setShowHistory(false); setShowOutline(false); };
+
+  const toggleOrOpen = (current: boolean, opener: () => void, closer: () => void) => {
+    if (isMobile) { opener(); } else { current ? closer() : opener(); }
+  };
+
   const aiToolButtons = (
     <>
       <Tooltip>
@@ -1032,7 +1040,7 @@ const EditorPage: React.FC = () => {
           <Button
             variant={chatOpen ? 'default' : 'ghost'}
             size="icon"
-            onClick={() => { setChatOpen(!chatOpen); setHumanizerOpen(false); setShowPlagiarism(false); }}
+            onClick={() => toggleOrOpen(chatOpen, openChat, () => setChatOpen(false))}
             className="scale-click"
           >
             <MessageCircle className="w-4 h-4" />
@@ -1045,7 +1053,7 @@ const EditorPage: React.FC = () => {
           <Button
             variant={humanizerOpen ? 'default' : 'ghost'}
             size="icon"
-            onClick={() => { setHumanizerOpen(!humanizerOpen); setChatOpen(false); setShowPlagiarism(false); }}
+            onClick={() => toggleOrOpen(humanizerOpen, openHumanizer, () => setHumanizerOpen(false))}
             className="scale-click"
           >
             <Sparkles className="w-4 h-4" />
@@ -1058,7 +1066,7 @@ const EditorPage: React.FC = () => {
           <Button
             variant={showPlagiarism ? 'default' : 'ghost'}
             size="icon"
-            onClick={() => { setShowPlagiarism(!showPlagiarism); setChatOpen(false); setHumanizerOpen(false); setShowOutline(false); }}
+            onClick={() => toggleOrOpen(showPlagiarism, openPlagiarism, () => setShowPlagiarism(false))}
             className="scale-click"
           >
             <ShieldCheck className="w-4 h-4" />
