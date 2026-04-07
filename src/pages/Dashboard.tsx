@@ -250,6 +250,7 @@ const Dashboard: React.FC = () => {
       </main>
 
       <SettingsDrawer open={settingsOpen} onOpenChange={setSettingsOpen} />
+      <InstallPrompt />
     </div>
   );
 };
