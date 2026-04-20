@@ -104,8 +104,21 @@ Write the full document now. Do not include meta-commentary or instructions.`,
     return result;
   };
 
+  // Escape raw AI text before markdown conversion to prevent XSS.
+  // Any HTML tags or event handlers in the AI response become plain text.
+  const escapeRawHtml = (str: string): string => {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  };
+
   const markdownToHtml = (md: string): string => {
-    return md
+    // Escape first — then our converter adds only known-safe tags
+    const safe = escapeRawHtml(md);
+    return safe
       .replace(/^### (.+)$/gm, '<h3>$1</h3>')
       .replace(/^## (.+)$/gm, '<h2>$1</h2>')
       .replace(/^# (.+)$/gm, '<h1>$1</h1>')
