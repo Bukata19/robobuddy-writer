@@ -12,7 +12,7 @@
 
 ## 📸 Overview
 
-RobAssister is a full-stack AI writing assistant built for students who need to produce high-quality academic documents. It combines a rich-text editor with three powerful AI tools — an intelligent chat assistant, a text humanizer, and a plagiarism checker — all wrapped in a sleek Deep Dark interface.
+RobAssister is a full-stack AI writing assistant built for students who need to produce high-quality academic documents. It combines a rich-text editor with powerful AI tools — an intelligent chat assistant, a text humanizer, and a plagiarism checker — all wrapped in a sleek Deep Dark interface.
 
 ---
 
