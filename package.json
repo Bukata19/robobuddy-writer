@@ -104,9 +104,9 @@
     "vitest": "^3.2.4"
   },
   "overrides": {
-    "@tiptap/core": "3.22.2"
+    "@tiptap/core": "3.22.5"
   },
   "resolutions": {
-    "@tiptap/core": "3.22.2"
+    "@tiptap/core": "3.22.5"
   }
 }
