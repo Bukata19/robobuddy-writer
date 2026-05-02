@@ -14,7 +14,10 @@ import OutlinePanel from '@/components/OutlinePanel';
 import {
   Drawer,
   DrawerContent,
+  DrawerTitle,
+  DrawerDescription,
 } from '@/components/ui/drawer';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { useIsMobile } from '@/hooks/use-mobile';
 import introJs from 'intro.js';
 import 'intro.js/introjs.css';
