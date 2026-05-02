@@ -1249,6 +1249,10 @@ const EditorPage: React.FC = () => {
       {isMobile && (
         <Drawer open={!!activeSidebar} onOpenChange={(open) => { if (!open) closeSidebar(); }}>
           <DrawerContent className="h-[75vh] max-h-[75vh] p-0 flex flex-col">
+            <VisuallyHidden>
+              <DrawerTitle>AI Tools</DrawerTitle>
+              <DrawerDescription>AI-powered writing assistance panel</DrawerDescription>
+            </VisuallyHidden>
             {sidebarContent}
           </DrawerContent>
         </Drawer>
