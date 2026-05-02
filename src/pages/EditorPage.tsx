@@ -14,7 +14,10 @@ import OutlinePanel from '@/components/OutlinePanel';
 import {
   Drawer,
   DrawerContent,
+  DrawerTitle,
+  DrawerDescription,
 } from '@/components/ui/drawer';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { useIsMobile } from '@/hooks/use-mobile';
 import introJs from 'intro.js';
 import 'intro.js/introjs.css';
@@ -1249,6 +1252,10 @@ const EditorPage: React.FC = () => {
       {isMobile && (
         <Drawer open={!!activeSidebar} onOpenChange={(open) => { if (!open) closeSidebar(); }}>
           <DrawerContent className="h-[75vh] max-h-[75vh] p-0 flex flex-col">
+            <VisuallyHidden>
+              <DrawerTitle>AI Tools</DrawerTitle>
+              <DrawerDescription>AI-powered writing assistance panel</DrawerDescription>
+            </VisuallyHidden>
             {sidebarContent}
           </DrawerContent>
         </Drawer>
