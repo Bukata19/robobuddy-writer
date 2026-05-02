@@ -217,8 +217,8 @@ const EditorPage: React.FC = () => {
     autofocus: true,
     editorProps: {
       attributes: {
-        class: 'prose prose-invert prose-sm max-w-none focus:outline-none min-h-full',
-        style: 'font-family: Georgia, serif; min-height: 100%; caret-color: hsl(var(--primary));',
+        class: 'prose prose-invert prose-sm max-w-none focus:outline-none min-h-full w-full',
+        style: 'font-family: Georgia, serif; min-height: 100%; width: 100%; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; caret-color: hsl(var(--primary));',
       },
     },
     onUpdate: ({ editor: ed }) => {
@@ -1186,16 +1186,16 @@ const EditorPage: React.FC = () => {
         )}
 
         {/* Editor Canvas */}
-        <div className={`flex-1 overflow-auto flex justify-center py-6 sm:py-10 px-3 sm:px-6 scrollbar-dark transition-colors duration-500 ${focusMode ? 'bg-background' : 'bg-muted/30'} ${!plagiarismHighlightsVisible ? 'hide-plagiarism-highlights' : ''}`}>
+        <div className={`flex-1 overflow-auto flex justify-center py-4 sm:py-8 lg:py-10 px-2 sm:px-4 lg:px-8 scrollbar-dark transition-colors duration-500 ${focusMode ? 'bg-background' : 'bg-muted/30'} ${!plagiarismHighlightsVisible ? 'hide-plagiarism-highlights' : ''}`}>
           <div
-            className={`bg-card w-full ${focusMode ? 'max-w-[720px] border-transparent shadow-none' : canvasMaxW + ' shadow-lg border border-border'} min-h-[600px] sm:min-h-[1056px] p-6 sm:p-16 rounded-lg text-foreground transition-all duration-500 focus-within:ring-2 focus-within:ring-primary/20`}
+            className={`bg-card w-full overflow-hidden ${focusMode ? 'max-w-[720px] border-transparent shadow-none' : canvasMaxW + ' shadow-xl border border-border/60'} min-h-[400px] sm:min-h-[1056px] p-4 sm:p-10 lg:p-16 rounded-xl text-foreground transition-all duration-500 focus-within:ring-2 focus-within:ring-primary/30`}
             data-intro-id="editor-canvas"
             style={{ lineHeight, fontSize: 'var(--editor-font-size)' }}
           >
             <EditorContent
               editor={editor}
-              className="h-full cursor-text"
-              style={{ fontFamily: 'Georgia, serif' }}
+              className="h-full w-full min-w-0 cursor-text"
+              style={{ fontFamily: 'Georgia, serif', wordBreak: 'break-word', overflowWrap: 'break-word' }}
               onClick={() => { if (editor && !editor.isFocused) editor.commands.focus('end'); }}
             />
           </div>
