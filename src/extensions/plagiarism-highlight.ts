@@ -1,10 +1,10 @@
-import { Mark, mergeAttributes } from '@tiptap/react';
+import { Mark, mergeAttributes } from '@tiptap/core';
 
 export interface PlagiarismHighlightOptions {
   HTMLAttributes: Record<string, any>;
 }
 
-declare module '@tiptap/react' {
+declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     plagiarismHighlight: {
       setPlagiarismHighlight: (attributes?: { severity?: string }) => ReturnType;
