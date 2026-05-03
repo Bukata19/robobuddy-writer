@@ -82,7 +82,17 @@ Be concise, helpful, and academic in tone. Use markdown formatting in your respo
     }
 
     if (plagiarismData) {
-      systemPrompt += `\n\n--- PLAGIARISM DATA ---\n${JSON.stringify(plagiarismData)}`;
+      const MAX_PLAGIARISM_CHARS = 50_000;
+      let pdStr: string;
+      try {
+        pdStr = typeof plagiarismData === "string" ? plagiarismData : JSON.stringify(plagiarismData);
+      } catch {
+        pdStr = "";
+      }
+      if (pdStr.length > MAX_PLAGIARISM_CHARS) {
+        pdStr = pdStr.slice(0, MAX_PLAGIARISM_CHARS) + "\n...[truncated]";
+      }
+      systemPrompt += `\n\n--- PLAGIARISM DATA ---\n${pdStr}`;
     }
 
     const response = await fetch(
@@ -97,7 +107,7 @@ Be concise, helpful, and academic in tone. Use markdown formatting in your respo
           model: "google/gemini-3-flash-preview",
           messages: [
             { role: "system", content: systemPrompt },
-            ...messages.slice(-20),
+            ...sanitizedMessages,
           ],
           stream: true,
         }),
