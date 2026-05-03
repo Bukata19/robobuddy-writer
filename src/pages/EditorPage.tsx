@@ -1191,7 +1191,7 @@ const EditorPage: React.FC = () => {
         {/* Editor Canvas */}
         <div className={`flex-1 overflow-auto flex justify-center py-4 sm:py-8 lg:py-10 px-2 sm:px-4 lg:px-8 scrollbar-dark transition-colors duration-500 ${focusMode ? 'bg-background' : 'bg-muted/30'} ${!plagiarismHighlightsVisible ? 'hide-plagiarism-highlights' : ''}`}>
           <div
-            className={`bg-card w-full overflow-hidden ${focusMode ? 'max-w-[720px] border-transparent shadow-none' : canvasMaxW + ' shadow-xl border border-border/60'} min-h-[400px] sm:min-h-[1056px] p-4 sm:p-10 lg:p-16 rounded-xl text-foreground transition-all duration-500 focus-within:ring-2 focus-within:ring-primary/30`}
+            className={`bg-card w-full overflow-hidden ${focusMode ? 'max-w-[720px] border-transparent shadow-none' : canvasMaxW + ' shadow-xl border border-border/60'} min-h-[400px] sm:min-h-[1056px] p-4 sm:p-8 lg:p-14 rounded-xl text-foreground transition-all duration-500 focus-within:ring-2 focus-within:ring-primary/30`}
             data-intro-id="editor-canvas"
             style={{ lineHeight, fontSize: 'var(--editor-font-size)' }}
           >
