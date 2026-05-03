@@ -46,6 +46,18 @@ serve(async (req) => {
       );
     }
 
+    // Enforce per-message size limits to prevent token cost abuse
+    const MAX_MESSAGE_CHARS = 4000;
+    const sanitizedMessages = messages.slice(-20).map((m: any) => {
+      const content = typeof m?.content === "string" ? m.content : String(m?.content ?? "");
+      return {
+        role: m?.role === "assistant" || m?.role === "system" ? m.role : "user",
+        content: content.length > MAX_MESSAGE_CHARS
+          ? content.slice(0, MAX_MESSAGE_CHARS) + "\n...[truncated]"
+          : content,
+      };
+    });
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
