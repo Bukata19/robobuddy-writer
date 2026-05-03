@@ -1190,18 +1190,13 @@ const EditorPage: React.FC = () => {
 
         {/* Editor Canvas */}
         <div className={`flex-1 overflow-auto flex justify-center py-4 sm:py-8 lg:py-10 px-2 sm:px-4 lg:px-8 scrollbar-dark transition-colors duration-500 ${focusMode ? 'bg-background' : 'bg-muted/30'} ${!plagiarismHighlightsVisible ? 'hide-plagiarism-highlights' : ''}`}>
-          <div
-            className={`bg-card w-full ${focusMode ? 'max-w-[720px] border-transparent shadow-none' : canvasMaxW + ' shadow-xl border border-border/60'} min-h-[400px] p-4 sm:p-8 lg:p-14 rounded-xl text-foreground transition-all duration-500 focus-within:ring-2 focus-within:ring-primary/30`}
+          <EditorContent
+            editor={editor}
             data-intro-id="editor-canvas"
-            style={{ lineHeight, fontSize: 'var(--editor-font-size)' }}
-          >
-            <EditorContent
-              editor={editor}
-              className="h-full w-full min-w-0 cursor-text"
-              style={{ fontFamily: 'Georgia, serif', wordBreak: 'break-word', overflowWrap: 'break-word' }}
-              onClick={() => { if (editor && !editor.isFocused) editor.commands.focus('end'); }}
-            />
-          </div>
+            className={`w-full min-w-0 px-4 sm:px-10 py-6 cursor-text text-foreground ${focusMode ? 'max-w-[720px]' : canvasMaxW}`}
+            style={{ fontFamily: 'Georgia, serif', wordBreak: 'break-word', overflowWrap: 'break-word', lineHeight, fontSize: 'var(--editor-font-size)' }}
+            onClick={() => { if (editor && !editor.isFocused) editor.commands.focus('end'); }}
+          />
         </div>
 
         {/* Desktop: Right AI tab bar + inline sidebar */}
