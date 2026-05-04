@@ -76,22 +76,54 @@ type ChatMessage = { role: 'user' | 'assistant'; content: string };
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 
-// TipTap JSON templates
+// Placeholder text per doc type, keyed by paragraph index (only paragraphs counted)
+const placeholderMaps: Record<DocType, Record<number, string>> = {
+  essay: {
+    0: 'Write your thesis statement and introduce the topic here...',
+    1: 'Present your first main argument with supporting evidence...',
+    2: 'Present your second main argument with supporting evidence...',
+    3: 'Present your third main argument with supporting evidence...',
+    4: 'Summarize your arguments and restate your thesis...',
+  },
+  research_paper: {
+    0: 'Provide a brief summary of the research (150-300 words)...',
+    1: 'Introduce the research problem, background, and objectives...',
+    2: 'Review relevant existing research and identify gaps...',
+    3: 'Describe your research methods, data collection, and analysis approach...',
+    4: 'Present your findings with data, tables, or figures...',
+    5: 'Interpret results, compare with existing literature, discuss limitations...',
+    6: 'Summarize key findings and suggest future research directions...',
+    7: 'List all cited sources in proper format...',
+  },
+  report: {
+    0: 'Provide a concise overview of the report...',
+    1: 'State the purpose and scope of the report...',
+    2: 'Present your research findings and analysis...',
+    3: 'Provide actionable recommendations based on findings...',
+    4: 'Summarize the report and next steps...',
+  },
+  general: {
+    0: 'Start writing here...',
+  },
+};
+
+// TipTap JSON templates — paragraphs are intentionally empty;
+// placeholder text is supplied by the TipTap Placeholder extension.
 const templates: Record<DocType, any> = {
   essay: {
     type: 'doc',
     content: [
       { type: 'heading', attrs: { level: 1 }, content: [{ type: 'text', text: 'Essay Title' }] },
       { type: 'heading', attrs: { level: 2 }, content: [{ type: 'text', text: 'Introduction' }] },
-      { type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'italic' }], text: 'Write your thesis statement and introduce the topic here...' }] },
+      { type: 'paragraph' },
       { type: 'heading', attrs: { level: 2 }, content: [{ type: 'text', text: 'Body Paragraph 1' }] },
-      { type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'italic' }], text: 'Present your first main argument with supporting evidence...' }] },
+      { type: 'paragraph' },
       { type: 'heading', attrs: { level: 2 }, content: [{ type: 'text', text: 'Body Paragraph 2' }] },
-      { type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'italic' }], text: 'Present your second main argument with supporting evidence...' }] },
+      { type: 'paragraph' },
       { type: 'heading', attrs: { level: 2 }, content: [{ type: 'text', text: 'Body Paragraph 3' }] },
-      { type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'italic' }], text: 'Present your third main argument with supporting evidence...' }] },
+      { type: 'paragraph' },
       { type: 'heading', attrs: { level: 2 }, content: [{ type: 'text', text: 'Conclusion' }] },
-      { type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'italic' }], text: 'Summarize your arguments and restate your thesis...' }] },
+      { type: 'paragraph' },
     ],
   },
   research_paper: {
@@ -99,21 +131,21 @@ const templates: Record<DocType, any> = {
     content: [
       { type: 'heading', attrs: { level: 1 }, content: [{ type: 'text', text: 'Research Paper Title' }] },
       { type: 'heading', attrs: { level: 2 }, content: [{ type: 'text', text: 'Abstract' }] },
-      { type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'italic' }], text: 'Provide a brief summary of the research (150-300 words)...' }] },
+      { type: 'paragraph' },
       { type: 'heading', attrs: { level: 2 }, content: [{ type: 'text', text: 'Introduction' }] },
-      { type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'italic' }], text: 'Introduce the research problem, background, and objectives...' }] },
+      { type: 'paragraph' },
       { type: 'heading', attrs: { level: 2 }, content: [{ type: 'text', text: 'Literature Review' }] },
-      { type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'italic' }], text: 'Review relevant existing research and identify gaps...' }] },
+      { type: 'paragraph' },
       { type: 'heading', attrs: { level: 2 }, content: [{ type: 'text', text: 'Methodology' }] },
-      { type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'italic' }], text: 'Describe your research methods, data collection, and analysis approach...' }] },
+      { type: 'paragraph' },
       { type: 'heading', attrs: { level: 2 }, content: [{ type: 'text', text: 'Results' }] },
-      { type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'italic' }], text: 'Present your findings with data, tables, or figures...' }] },
+      { type: 'paragraph' },
       { type: 'heading', attrs: { level: 2 }, content: [{ type: 'text', text: 'Discussion' }] },
-      { type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'italic' }], text: 'Interpret results, compare with existing literature, discuss limitations...' }] },
+      { type: 'paragraph' },
       { type: 'heading', attrs: { level: 2 }, content: [{ type: 'text', text: 'Conclusion' }] },
-      { type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'italic' }], text: 'Summarize key findings and suggest future research directions...' }] },
+      { type: 'paragraph' },
       { type: 'heading', attrs: { level: 2 }, content: [{ type: 'text', text: 'References' }] },
-      { type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'italic' }], text: 'List all cited sources in proper format...' }] },
+      { type: 'paragraph' },
     ],
   },
   report: {
@@ -121,22 +153,22 @@ const templates: Record<DocType, any> = {
     content: [
       { type: 'heading', attrs: { level: 1 }, content: [{ type: 'text', text: 'Report Title' }] },
       { type: 'heading', attrs: { level: 2 }, content: [{ type: 'text', text: 'Executive Summary' }] },
-      { type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'italic' }], text: 'Provide a concise overview of the report...' }] },
+      { type: 'paragraph' },
       { type: 'heading', attrs: { level: 2 }, content: [{ type: 'text', text: 'Introduction' }] },
-      { type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'italic' }], text: 'State the purpose and scope of the report...' }] },
+      { type: 'paragraph' },
       { type: 'heading', attrs: { level: 2 }, content: [{ type: 'text', text: 'Findings' }] },
-      { type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'italic' }], text: 'Present your research findings and analysis...' }] },
+      { type: 'paragraph' },
       { type: 'heading', attrs: { level: 2 }, content: [{ type: 'text', text: 'Recommendations' }] },
-      { type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'italic' }], text: 'Provide actionable recommendations based on findings...' }] },
+      { type: 'paragraph' },
       { type: 'heading', attrs: { level: 2 }, content: [{ type: 'text', text: 'Conclusion' }] },
-      { type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'italic' }], text: 'Summarize the report and next steps...' }] },
+      { type: 'paragraph' },
     ],
   },
   general: {
     type: 'doc',
     content: [
       { type: 'heading', attrs: { level: 1 }, content: [{ type: 'text', text: 'Document Title' }] },
-      { type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'italic' }], text: 'Start writing here...' }] },
+      { type: 'paragraph' },
     ],
   },
 };
