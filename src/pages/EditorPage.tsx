@@ -239,13 +239,31 @@ const EditorPage: React.FC = () => {
   const [chatLoading, setChatLoading] = useState(false);
   const chatScrollRef = useRef<HTMLDivElement>(null);
 
+  const docTypeRef = useRef<DocType>('general');
+
   // TipTap editor
   const editor = useEditor({
     extensions: [
       StarterKit,
       UnderlineExt,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
-      Placeholder.configure({ placeholder: 'Start writing…' }),
+      Placeholder.configure({
+        showOnlyWhenEditable: true,
+        showOnlyCurrent: true,
+        placeholder: ({ node, pos, editor: ed }) => {
+          if (node.type.name !== 'paragraph') return '';
+          const map = placeholderMaps[docTypeRef.current] ?? {};
+          let paragraphIndex = -1;
+          let matched = -1;
+          ed.state.doc.forEach((child, offset) => {
+            if (child.type.name === 'paragraph') {
+              paragraphIndex += 1;
+              if (offset === pos) matched = paragraphIndex;
+            }
+          });
+          return map[matched] ?? '';
+        },
+      }),
       CharacterCount,
       PlagiarismHighlight,
     ],
