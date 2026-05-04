@@ -343,7 +343,6 @@
   min-height: 100%;
 }
 
-.tiptap p.is-editor-empty:first-child::before,
 .tiptap p.is-empty::before {
   content: attr(data-placeholder);
   float: left;
