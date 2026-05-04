@@ -249,7 +249,7 @@ const EditorPage: React.FC = () => {
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
       Placeholder.configure({
         showOnlyWhenEditable: true,
-        showOnlyCurrent: true,
+        showOnlyCurrent: false,
         placeholder: ({ node, pos, editor: ed }) => {
           if (node.type.name !== 'paragraph') return '';
           const map = placeholderMaps[docTypeRef.current] ?? {};
