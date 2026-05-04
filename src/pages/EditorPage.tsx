@@ -312,6 +312,7 @@ const EditorPage: React.FC = () => {
   // Load content into editor once both editor and doc are ready
   useEffect(() => {
     if (!editor || !doc) return;
+    docTypeRef.current = doc.doc_type;
     
     if (doc.content) {
       // Try as TipTap JSON first, fall back to HTML string
