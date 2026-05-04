@@ -24,7 +24,8 @@ const AuthPage: React.FC = () => {
       if (isLogin) {
         const { error } = await signIn(email, password, rememberMe);
         if (error) {
-          toast.error(error.message);
+          console.error('Sign-in error:', error);
+          toast.error('Invalid email or password.');
         } else {
           toast.success('Welcome back!');
           navigate('/dashboard');
@@ -32,7 +33,8 @@ const AuthPage: React.FC = () => {
       } else {
         const { error } = await signUp(email, password);
         if (error) {
-          toast.error(error.message);
+          console.error('Sign-up error:', error);
+          toast.error('Unable to create account. Please try again.');
         } else {
           toast.success('Account created! Check your email to confirm.');
         }
