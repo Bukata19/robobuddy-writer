@@ -250,18 +250,32 @@ const EditorPage: React.FC = () => {
       Placeholder.configure({
         showOnlyWhenEditable: true,
         showOnlyCurrent: false,
+        includeChildren: true,
         placeholder: ({ node, pos, editor: ed }) => {
+          if (node.type.name === 'heading') {
+            const level = (node.attrs as { level?: number })?.level ?? 1;
+            if (level === 1) return 'Heading 1';
+            if (level === 2) return 'Heading 2';
+            return 'Heading';
+          }
           if (node.type.name !== 'paragraph') return '';
           const map = placeholderMaps[docTypeRef.current] ?? {};
           let paragraphIndex = -1;
           let matched = -1;
+          let isFirst = true;
+          let firstParagraphPos = -1;
           ed.state.doc.forEach((child, offset) => {
             if (child.type.name === 'paragraph') {
               paragraphIndex += 1;
+              if (isFirst) { firstParagraphPos = offset; isFirst = false; }
               if (offset === pos) matched = paragraphIndex;
             }
           });
-          return map[matched] ?? '';
+          const mapped = map[matched];
+          if (mapped) return mapped;
+          // Generic fallback so every empty paragraph still gets a hint
+          if (pos === firstParagraphPos) return 'Start writing your document…';
+          return 'Write something…';
         },
       }),
       CharacterCount,
