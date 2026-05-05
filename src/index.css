@@ -346,6 +346,7 @@
 .tiptap p.is-empty::before {
   content: attr(data-placeholder);
   float: left;
+  white-space: nowrap;
   color: hsl(var(--muted-foreground));
   opacity: 0.5;
   pointer-events: none;
