@@ -271,8 +271,7 @@ const EditorPage: React.FC = () => {
     editorProps: {
       attributes: {
         class: 'prose prose-invert prose-sm max-w-none focus:outline-none min-h-full w-full',
-        style: 'font-family: Georgia, serif; min-height: 100%; width: 100%; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; caret-color: hsl(var(--primary));',
-      },
+        style: 'font-family: Georgia, serif; min-height: 100%; width: 100%; word-break: break-word; overflow-wrap: break-word; caret-color: hsl(var(--primary));',      },
     },
     onUpdate: ({ editor: ed }) => {
       setWordCount(ed.storage.characterCount.words());
