@@ -49,7 +49,10 @@ import {
   History,
   Maximize,
   Minimize,
+  Brain,
 } from 'lucide-react';
+import { useInlineAiSuggestion } from '@/hooks/useInlineAiSuggestion';
+import InlineSuggestionBubble from '@/components/InlineSuggestionBubble';
 import type { Json } from '@/integrations/supabase/types';
 
 // TipTap
