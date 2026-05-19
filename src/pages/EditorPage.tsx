@@ -1212,6 +1212,28 @@ const EditorPage: React.FC = () => {
 
         <span className="text-xs text-muted-foreground hidden sm:inline whitespace-nowrap font-mono">{wordCount} words</span>
 
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => {
+                const next = !coachEnabled;
+                setCoachEnabled(next);
+                localStorage.setItem('ra_coach_enabled', String(next));
+                if (!next) {
+                  setCoachSuggestion(null);
+                  setCoachLoading(false);
+                }
+              }}
+              className={`scale-click ${coachEnabled ? 'text-primary' : ''}`}
+            >
+              <Brain className="w-4 h-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>{coachEnabled ? 'Writing Coach: On' : 'Writing Coach: Off'}</TooltipContent>
+        </Tooltip>
+
         {/* Export dropdown */}
         <div className="relative" ref={exportMenuRef}>
           <Button variant="outline" size="sm" onClick={() => setExportMenuOpen(!exportMenuOpen)} disabled={exporting} data-intro-id="export-btn" className="btn-glow">
