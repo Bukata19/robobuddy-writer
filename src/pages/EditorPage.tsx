@@ -1262,7 +1262,7 @@ const EditorPage: React.FC = () => {
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" onClick={openHistory} className="scale-click">
+            <Button variant="ghost" size="icon" onClick={openHistory} data-intro-id="history-btn" className="scale-click">
               <History className="w-4 h-4" />
             </Button>
           </TooltipTrigger>
@@ -1271,7 +1271,7 @@ const EditorPage: React.FC = () => {
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" onClick={() => setFocusMode(!focusMode)} className="scale-click">
+            <Button variant="ghost" size="icon" onClick={() => setFocusMode(!focusMode)} data-intro-id="focus-btn" className="scale-click">
               {focusMode ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
             </Button>
           </TooltipTrigger>
