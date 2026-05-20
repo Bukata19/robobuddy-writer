@@ -154,7 +154,7 @@ const Dashboard: React.FC = () => {
             <span className="font-display font-bold text-foreground text-lg tracking-tight">RobAssister</span>
           </div>
           <div className="flex items-center gap-1">
-            <Button variant="ghost" size="icon" onClick={() => setSettingsOpen(true)} title="Settings">
+            <Button variant="ghost" size="icon" onClick={() => setSettingsOpen(true)} title="Settings" data-intro-id="settings-btn">
               <Settings className="w-4 h-4" />
             </Button>
           </div>
