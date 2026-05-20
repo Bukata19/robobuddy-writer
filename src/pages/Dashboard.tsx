@@ -173,7 +173,7 @@ const Dashboard: React.FC = () => {
         {/* New Document */}
         <div className="mb-8">
           <h2 className="text-lg font-display font-semibold text-foreground mb-4">New Document</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div data-intro-id="new-doc-grid" className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {(['essay', 'research_paper', 'report', 'general'] as DocType[]).map((type) => {
               const config = docTypeConfig[type];
               return (
