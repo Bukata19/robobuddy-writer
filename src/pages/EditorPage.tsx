@@ -831,27 +831,47 @@ const EditorPage: React.FC = () => {
         steps: [
           {
             element: '[data-intro-id="editor-canvas"]',
-            intro: 'This is your writing canvas. Type your content here — it uses a clean A4-style layout.',
+            intro: 'This is your writing canvas. Your document sections are pre-structured with smart placeholders — click any section and start typing.',
             position: 'right',
           },
           {
             element: '[data-intro-id="format-toolbar"]',
-            intro: 'Use these formatting tools to bold, italicize, add headings, lists, and align your text.',
+            intro: 'Format your text here — bold, italic, underline, headings, lists, and alignment. Active formats highlight as you write.',
             position: isMobile ? 'top' : 'right',
           },
           {
             element: '[data-intro-id="ai-tools"]',
-            intro: 'Access your AI tools here: Chat with an AI assistant, humanize text, or run a plagiarism check.',
+            intro: 'Your AI toolkit lives here. Chat with your AI assistant, humanize selected text, or run a plagiarism check — all without leaving the editor.',
             position: isMobile ? 'top' : 'left',
           },
           {
+            element: '[data-intro-id="doc-gen-btn"]',
+            intro: 'Need a head start? Open the Document Generator, enter your topic and tone, and get a fully written structured draft you can edit before inserting.',
+            position: isMobile ? 'top' : 'left',
+          },
+          {
+            element: '[data-intro-id="coach-btn"]',
+            intro: 'This is your Writing Coach. While enabled, it watches your writing and gives you one focused tip every time you pause — helping you write stronger assignments.',
+            position: 'bottom',
+          },
+          {
+            element: '[data-intro-id="history-btn"]',
+            intro: 'Every time you save, a version snapshot is created. Open Version History to browse past versions and restore any of them.',
+            position: 'bottom',
+          },
+          {
+            element: '[data-intro-id="focus-btn"]',
+            intro: 'Focus Mode hides all panels and toolbars so you can write without distractions. Press Esc or click the button again to return.',
+            position: 'bottom',
+          },
+          {
             element: '[data-intro-id="export-btn"]',
-            intro: 'Export your finished document as a PDF or DOCX file.',
+            intro: 'Export your finished document as a PDF or DOCX file with one click.',
             position: 'bottom',
           },
           {
             element: '[data-intro-id="save-btn"]',
-            intro: 'Save your work anytime. Documents also auto-save. Shortcut: Ctrl+S.',
+            intro: 'Save manually anytime with this button or Ctrl+S. Your document also auto-saves in the background.',
             position: 'bottom',
           },
         ],
