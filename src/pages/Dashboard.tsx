@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import SettingsDrawer from '@/components/SettingsDrawer';
 import InstallPrompt from '@/components/InstallPrompt';
+import ImportDocumentButton from '@/components/ImportDocumentButton';
 import {
   Plus,
   FileText,
