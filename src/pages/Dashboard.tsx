@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSettings } from '@/contexts/SettingsContext';
 import { supabase } from '@/integrations/supabase/client';
+import introJs from 'intro.js';
+import 'intro.js/introjs.css';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import SettingsDrawer from '@/components/SettingsDrawer';
@@ -56,6 +58,40 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     fetchDocuments();
+  }, []);
+
+  useEffect(() => {
+    const TOUR_KEY = 'rb_dashboard_tour_done';
+    if (localStorage.getItem(TOUR_KEY)) return;
+    const timer = setTimeout(() => {
+      const intro = introJs();
+      intro.setOptions({
+        steps: [
+          {
+            element: '[data-intro-id="new-doc-grid"]',
+            intro: 'Start a new document here. Choose from Essay, Research Paper, Report, or General — each comes with a structured template ready to fill in.',
+          },
+          {
+            element: '[data-intro-id="import-btn"]',
+            intro: 'Already have a document? Import it directly from your device. Supports .txt, .md, and .docx files.',
+          },
+          {
+            element: '[data-intro-id="settings-btn"]',
+            intro: 'Open Settings to switch between light and dark themes, change font size, configure autosave, and more.',
+          },
+        ],
+        showProgress: true,
+        showBullets: false,
+        exitOnOverlayClick: true,
+        doneLabel: 'Got it!',
+        nextLabel: 'Next →',
+        prevLabel: '← Back',
+      });
+      intro.oncomplete(() => localStorage.setItem(TOUR_KEY, 'true'));
+      intro.onexit(() => localStorage.setItem(TOUR_KEY, 'true'));
+      intro.start();
+    }, 600);
+    return () => clearTimeout(timer);
   }, []);
 
   const fetchDocuments = async () => {
@@ -118,7 +154,7 @@ const Dashboard: React.FC = () => {
             <span className="font-display font-bold text-foreground text-lg tracking-tight">RobAssister</span>
           </div>
           <div className="flex items-center gap-1">
-            <Button variant="ghost" size="icon" onClick={() => setSettingsOpen(true)} title="Settings">
+            <Button variant="ghost" size="icon" onClick={() => setSettingsOpen(true)} title="Settings" data-intro-id="settings-btn">
               <Settings className="w-4 h-4" />
             </Button>
           </div>
@@ -137,7 +173,7 @@ const Dashboard: React.FC = () => {
         {/* New Document */}
         <div className="mb-8">
           <h2 className="text-lg font-display font-semibold text-foreground mb-4">New Document</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div data-intro-id="new-doc-grid" className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {(['essay', 'research_paper', 'report', 'general'] as DocType[]).map((type) => {
               const config = docTypeConfig[type];
               return (
