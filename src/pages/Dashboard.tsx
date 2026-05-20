@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import SettingsDrawer from '@/components/SettingsDrawer';
 import InstallPrompt from '@/components/InstallPrompt';
+import ImportDocumentButton from '@/components/ImportDocumentButton';
 import {
   Plus,
   FileText,
@@ -189,6 +190,9 @@ const Dashboard: React.FC = () => {
                 </button>
               );
             })}
+          </div>
+          <div data-intro-id="import-btn" className="mt-3 flex justify-center">
+            <ImportDocumentButton onImported={fetchDocuments} />
           </div>
         </div>
 
