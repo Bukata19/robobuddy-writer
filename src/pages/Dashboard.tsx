@@ -191,6 +191,9 @@ const Dashboard: React.FC = () => {
               );
             })}
           </div>
+          <div data-intro-id="import-btn" className="mt-3 flex justify-center">
+            <ImportDocumentButton onImported={fetchDocuments} />
+          </div>
         </div>
 
         {/* Documents */}
